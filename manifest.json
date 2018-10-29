@@ -1,0 +1,57 @@
+{
+  "name": "GithubTags",
+  "version": "1.0",
+  "description": "给Github项目添加标签",
+  "manifest_version": 2,
+  "icons": {
+    "16": "images/icon.png",
+    "48": "images/icon.png",
+    "128": "images/icon.png"
+  },
+  "browser_action":
+  {
+    "default_icon": "images/icon.png",
+    "default_title": "Git Remarks"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*"
+      ],
+      "css": [
+        "styles/lib/element-ui.css",
+        "styles/global.css",
+        "styles/github/index.css"
+      ],
+      "js": [
+        "javascript/lib/vue.js",
+        "javascript/lib/element-ui.js",
+        "javascript/github/tag.js",
+        "javascript/github/index.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://gitee.com/*"
+      ],
+      "css": [
+        "styles/global.css",
+        "styles/gitee/index.css"
+      ],
+      "js": [
+        "javascript/lib/vue.js",
+        "javascript/gitee/index.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [
+    "storage"
+  ],
+  "web_accessible_resources": [
+    "fonts/element-icons.woff"
+  ]
+}

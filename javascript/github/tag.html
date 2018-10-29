@@ -1,0 +1,27 @@
+<!--在这里改 不会生效-->
+<div>
+    <template v-for="tag in tags">
+        <el-tag
+                :key="tag"
+                type="success"
+                size="small"
+                :closable="editEnable"
+                :disable-transitions="false"
+                @close="handleClose(tag)"
+                @click.native="handleClickTag(tag)"
+        >
+            {{tag}}
+        </el-tag>
+    </template>
+    <el-input
+            class="input-new-tag"
+            v-show="editEnable&&inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="mini"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm"
+    >
+    </el-input>
+    <el-button v-show="editEnable&&!inputVisible" class="button-new-tag" size="small" @click="showInput">+ 标签</el-button>
+</div>
