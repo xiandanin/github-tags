@@ -1,11 +1,11 @@
 <!--在这里改 不会生效-->
-<div>
+<div style="display: inline-flex;">
     <template v-for="tag in tags">
         <el-tag
                 :key="tag"
                 type="success"
                 size="small"
-                :closable="editEnable"
+                :closable="edit"
                 :disable-transitions="false"
                 @close="handleClose(tag)"
                 @click.native="handleClickTag(tag)"
@@ -15,7 +15,7 @@
     </template>
     <el-input
             class="input-new-tag"
-            v-show="editEnable&&inputVisible"
+            v-show="edit&&inputVisible"
             v-model="inputValue"
             ref="saveTagInput"
             size="mini"
@@ -23,5 +23,5 @@
             @blur="handleInputConfirm"
     >
     </el-input>
-    <el-button v-show="editEnable&&!inputVisible" class="button-new-tag" size="small" @click="showInput">+ 标签</el-button>
+    <el-button v-show="edit&&!inputVisible" class="button-new-tag" size="small" @click="showInput">+ 标签</el-button>
 </div>

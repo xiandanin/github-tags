@@ -27,10 +27,15 @@
     padding-bottom: 0;
 }
 
-.input-new-tag {
-    width: 35px;
-    vertical-align: bottom;
-    padding:0px;
+.input-new-tag{
+    width: 65px;
+    vertical-align: middle;
+}
+
+.input-new-tag input{
+    padding-left:5px;
+    text-align: center;
+    padding-right: 5px;
 }
 
 .input-new-tag .el-input__inner {

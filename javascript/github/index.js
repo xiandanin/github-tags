@@ -43,12 +43,14 @@ var _create_project_remark_dom = function (el, project_name) {
     var vue = new Vue({
             data: {
                 name: project_name,
-                tags: []
+                tags: [],
+                edit: true
             },
             created: function () {
                 var that = this;
-                _get_project_remarks(project_name, _get_github_username(), function (rsp) {
-                    that.tags = rsp;
+                _get_project_tags(project_name, _get_github_username(), function (tags) {
+                    that.tags = tags;
+                    that.edit = JSON.stringify(tags) == '[]';
                 });
             },
             render: function (h) {
@@ -58,7 +60,8 @@ var _create_project_remark_dom = function (el, project_name) {
                         'git_remarks_plugin__input': true
                     },
                     attrs: {
-                        tags: this.tags,
+                        tags: that.tags,
+                        edit: that.edit,
                     },
                     on: {
                         change: function (event) {
@@ -74,9 +77,13 @@ var _create_project_remark_dom = function (el, project_name) {
     el.parentNode.insertBefore(input.$el, el);
 
     // 有 fork 时 input 应该更往下
-    console.log(el.getElementsByClassName('fork-flag'), input);
-    if (el.getElementsByClassName('fork-flag').length > 0)
+    //console.log(el.getElementsByClassName('fork-flag'), input);
+    if (el.getElementsByClassName('fork-flag').length > 0) {
         input.$el.style.marginTop = '40px';
+    } else if (document.getElementById('choose-pinned-repositories') !== null) {
+        //在个人列表20px
+        input.$el.style.marginTop = '20px';
+    }
 
     return input;
 };
@@ -179,26 +186,46 @@ var _bind_project_remarks = function () {
  * @private
  */
 var _get_project_remarks = function (project_name, username, callback) {
-    if (project_name == null && username == null) {
-        chrome.storage.sync.get({tags: {}}, function (rsp) {
-            callback(rsp);
-        });
-    } else {
-        chrome.storage.sync.get({tags: {}}, function (rsp) {
-            if (project_name != null && username != null) {
-                if (rsp.tags != null &&
-                    rsp.tags[project_name] != null &&
-                    rsp.tags[project_name][username] != null) {
-                    callback(rsp.tags[project_name][username]);
-                    return true;
-                } else {
-                    callback("");
-                    return true;
+    chrome.storage.sync.get('items', function (rsp) {
+        if (JSON.stringify(rsp) == '{}') {
+            var result = {}
+            result.project_name = project_name
+            result.tags = []
+            var items = [];
+            items.push(result)
+
+            rsp.items = items
+        }
+        callback(rsp);
+    });
+};
+
+var _get_project_tags = function (project_name, username, callback) {
+    _get_project_remarks(project_name, username, function (rsp) {
+        for (var i = 0; i < rsp.items.length; i++) {
+            if (rsp.items[i].project_name == project_name) {
+                callback(rsp.items[i].tags)
+                break
+            }
+        }
+    })
+}
+
+
+var _search_project_by_tag = function (tag_name, callback) {
+    _get_project_remarks("", _get_github_username(), function (rsp) {
+        var array = new Array()
+        for (var i = 0; i < rsp.items.length; i++) {
+            for (var j = 0; j < rsp.items[i].tags.length; j++) {
+                if (rsp.items[i].tags[j] == tag_name) {
+                    array.push(rsp.items[i])
+                    break
                 }
             }
-        });
-    }
-};
+        }
+        callback(array)
+    })
+}
 
 /**
  * 保存用户设置
@@ -209,13 +236,29 @@ var _get_project_remarks = function (project_name, username, callback) {
  */
 var _save_project_remarks = function (project_name, username, value) {
     _get_project_remarks(null, null, function (rsp) {
-        var items = rsp;
+        if (project_name == null) {
+            return
+        }
+        if (rsp.items == undefined) {
+            rsp.items = []
+        }
 
-        if (items.tags[project_name] == null)
-            items.tags[project_name] = {};
-
-        items.tags[project_name][username] = value;
-        chrome.storage.sync.set(items);
+        var add = false
+        for (var i = 0; i < rsp.items.length; i++) {
+            if (rsp.items[i].project_name == project_name) {
+                rsp.items[i].tags = value
+                add = true
+                break
+            }
+        }
+        if (add == false) {
+            var result = {}
+            result.project_name = project_name
+            result.tags = value
+            rsp.items.push(result)
+        }
+        console.log("保存成功\n" + JSON.stringify(rsp, null, 2))
+        chrome.storage.sync.set(rsp);
     });
 };
 

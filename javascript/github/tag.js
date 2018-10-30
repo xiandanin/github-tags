@@ -1,15 +1,11 @@
 Vue.component('tag-group', {
-    props: ['tags'],
-    template: '<div><template v-for=\"tag in tags\"><el-tag                :key=\"tag\"                type=\"success\"                size=\"small\"                :closable=\"editEnable\"                :disable-transitions=\"false\"                @close=\"handleClose(tag)\"                @click.native=\"handleClickTag(tag)\"        >            {{tag}}</el-tag></template><el-input            class=\"input-new-tag\"            v-show=\"editEnable&&inputVisible\"            v-model=\"inputValue\"            ref=\"saveTagInput\"            size=\"mini\"            @keyup.enter.native=\"handleInputConfirm\"            @blur=\"handleInputConfirm\"    ></el-input><el-button v-show=\"editEnable&&!inputVisible\" class=\"button-new-tag\" size=\"small\" @click=\"showInput\">+ 标签</el-button></div>',
+    props: ['tags', 'edit'],
+    template: '<div style=\"display: inline-flex;\"><template v-for=\"tag in tags\"><el-tag                :key=\"tag\"                type=\"success\"                size=\"small\"                :closable=\"edit\"                :disable-transitions=\"false\"                @close=\"handleClose(tag)\"                @click.native=\"handleClickTag(tag)\"        >            {{tag}}</el-tag></template><el-input            class=\"input-new-tag\"            v-show=\"edit&&inputVisible\"            v-model=\"inputValue\"            ref=\"saveTagInput\"            size=\"mini\"            @keyup.enter.native=\"handleInputConfirm\"            @blur=\"handleInputConfirm\"    ></el-input><el-button v-show=\"edit&&!inputVisible\" class=\"button-new-tag\" size=\"small\" @click=\"showInput\">+ 标签</el-button></div>',
     data: function () {
         return {
             inputVisible: false,
             inputValue: '',
-            editEnable: false
         };
-    },
-    mounted: function () {
-        this.editEnable = this.tags.length <= 0;
     }, methods: {
         handleClickTag(tag) {
             this.handleSwitchEdit()
@@ -37,7 +33,7 @@ Vue.component('tag-group', {
         },
 
         handleSwitchEdit() {
-            this.editEnable = !this.editEnable
+            this.edit = !this.edit
         }
     }
 });
