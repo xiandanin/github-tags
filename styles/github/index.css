@@ -19,17 +19,23 @@
 .el-tag {
     margin-right: 10px;
     cursor: pointer;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .button-new-tag {
     height: 24px;
     padding-top: 0;
     padding-bottom: 0;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .input-new-tag{
     width: 65px;
     vertical-align: middle;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .input-new-tag input{

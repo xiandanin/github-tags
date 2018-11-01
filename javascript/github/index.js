@@ -27,7 +27,7 @@ var _get_github_username = function () {
  * @returns
  * @private
  */
-var _create_project_remark_dom = function (el, project_name) {
+var _create_project_remark_dom = function (el, project_name, class_name, insert_before) {
     // 如果 dom 已经被创建则直接返回 true
     if (el.getAttribute != null &&
         el.getAttribute('class') != null &&
@@ -35,8 +35,8 @@ var _create_project_remark_dom = function (el, project_name) {
         return true;
 
     // 调整元素位置，以供 input 填充
-    el.style.marginBottom = '30px';
-    el.style.display = 'block';
+    //el.style.marginBottom = '30px';
+    //el.style.display = 'block';
 
     // 打上标记，防止重复绑定
     el.setAttribute('class', el.getAttribute('class') + ' ' + bindMark);
@@ -56,16 +56,17 @@ var _create_project_remark_dom = function (el, project_name) {
             render: function (h) {
                 var that = this;
                 return h('tag-group', {
-                    'class': {
-                        'git_remarks_plugin__input': true
-                    },
                     attrs: {
                         tags: that.tags,
                         edit: that.edit,
+                        class: class_name
                     },
                     on: {
                         change: function (event) {
                             _save_project_remarks(project_name, _get_github_username(), event)
+                        },
+                        changeEdit: function (edit) {
+                            that.edit = edit
                         }
                     },
                     key: project_name
@@ -74,15 +75,16 @@ var _create_project_remark_dom = function (el, project_name) {
         })
     ;
     var input = vue.$mount();
-    el.parentNode.insertBefore(input.$el, el);
+    if (insert_before) {
+        el.parentNode.insertBefore(input.$el, el);
+    } else {
+        insertAfter(input.$el, el)
+    }
 
     // 有 fork 时 input 应该更往下
     //console.log(el.getElementsByClassName('fork-flag'), input);
     if (el.getElementsByClassName('fork-flag').length > 0) {
         input.$el.style.marginTop = '40px';
-    } else if (document.getElementById('choose-pinned-repositories') !== null) {
-        //在个人列表20px
-        input.$el.style.marginTop = '20px';
     }
 
     return input;
@@ -143,11 +145,11 @@ var _bind_project_remarks = function () {
             }
         }
 
-        _create_project_remark_dom(project, project_name);
+        _create_project_remark_dom(project, project_name, "git_remarks_plugin__input", false);
     }
 
 
-    // 个人中心列表页
+    // 列表
     if (document.getElementById('js-pjax-container') !== null) {
         var list = document.getElementById('js-pjax-container');
         projects = list.getElementsByTagName('h3');
@@ -156,24 +158,19 @@ var _bind_project_remarks = function () {
                 project_name = projects[i].getElementsByTagName('a')[0].getAttribute('href');
 
                 if (project_name !== null)
-                    _create_project_remark_dom(projects[i], project_name);
+                    _create_project_remark_dom(projects[i], project_name, "repository_detail_tags_container", false);
             }
         }
     }
 
-    // repositories 元素
+    // 个人主页
     if (document.getElementsByClassName('pinned-repos-list').length === 1 &&
         document.getElementsByClassName('pinned-repo-item').length > 0) {
         projects = document.getElementsByClassName('pinned-repo-item');
         for (i = 0; i < projects.length; i++) {
-            var a = projects[i].getElementsByTagName('a');
-            for (var ii = 0; ii < a.length; ii++) {
-                if (a[ii].getElementsByClassName('text-bold') != null && a[ii].getElementsByTagName('span').length === 1) {
-                    project_name = a[ii].getAttribute('href');
-                    _create_project_remark_dom(a[ii], project_name);
-                    break;
-                }
-            }
+            project_name = projects[i].getElementsByTagName("a")[0].getAttribute('href');
+            var p = projects[i].getElementsByClassName('pinned-repo-desc');
+            _create_project_remark_dom(p[0], project_name, "stars_list_container", true);
         }
     }
 };
@@ -204,8 +201,10 @@ var _get_project_tags = function (project_name, username, callback) {
     _get_project_remarks(project_name, username, function (rsp) {
         for (var i = 0; i < rsp.items.length; i++) {
             if (rsp.items[i].project_name == project_name) {
-                callback(rsp.items[i].tags)
-                break
+                if (rsp.items[i].tags.length > 0) {
+                    callback(rsp.items[i].tags)
+                    break
+                }
             }
         }
     })
@@ -257,7 +256,7 @@ var _save_project_remarks = function (project_name, username, value) {
             result.tags = value
             rsp.items.push(result)
         }
-        console.log("保存成功\n" + JSON.stringify(rsp, null, 2))
+        //console.log("保存成功\n" + JSON.stringify(rsp, null, 2))
         chrome.storage.sync.set(rsp);
     });
 };
@@ -293,3 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
         _watch_dom_flash(document.getElementById('js-repo-pjax-container'));
     }
 }, false);
+
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}

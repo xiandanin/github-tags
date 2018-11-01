@@ -52,6 +52,7 @@
     "storage"
   ],
   "web_accessible_resources": [
-    "fonts/element-icons.woff"
+    "fonts/element-icons.woff",
+    "fonts/element-icons.ttf"
   ]
 }
