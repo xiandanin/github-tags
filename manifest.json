@@ -8,8 +8,7 @@
     "48": "images/icon.png",
     "128": "images/icon.png"
   },
-  "browser_action":
-  {
+  "browser_action": {
     "default_icon": "images/icon.png",
     "default_title": "Git Remarks"
   },
@@ -27,6 +26,7 @@
         "javascript/lib/vue.js",
         "javascript/lib/element-ui.js",
         "javascript/github/tag.js",
+        "javascript/github/list.js",
         "javascript/github/index.js"
       ],
       "all_frames": true,

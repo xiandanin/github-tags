@@ -106,19 +106,89 @@ var _create_search_dom = function (el, project_name) {
 
     // 打上标记，防止重复绑定
     el.setAttribute('class', el.getAttribute('class') + ' ' + bindMark);
+    //el.oninput = vue.handlerChangeValue(el.value)
 
     var vue = new Vue({
-            el: el,
-            mounted: function () {
-                el.setAttribute('v-bind:click', "handlerChangeValue");
-            },
-            handlerChangeValue(){
-                console.log("---->")
+            data: {},
+            render: function (h) {
+                var that = this;
+                return h('a', {
+                    attrs: {
+                        class: "btn",
+                        href: "#",
+                        style: "margin-right:8px"
+                    },
+                    domProps: {
+                        innerHTML: "按标签搜索"
+                    },
+                    on: {
+                        click: function (event) {
+                            _create_search_list_dom(el.value)
+                        },
+                    }
+                })
             }
         })
     ;
+    var nav = document.getElementsByClassName("TableObject")
+    if (nav != null) {
+        var as = nav[0].getElementsByTagName("details")
+        if (as != null) {
+            as[0].parentNode.insertBefore(vue.$mount().$el, as[0])
+        }
+    }
     return false;
 };
+
+
+/**
+ * 搜索后的列表
+ * @param el
+ * @param project_name
+ * @returns {boolean}
+ * @private
+ */
+var _create_search_list_dom = function (keyword) {
+    var el = document.getElementsByClassName("TableObject")[0]
+    // 如果 dom 已经被创建则直接返回 true
+    if (el.getAttribute != null &&
+        el.getAttribute('class') != null &&
+        el.getAttribute('class').indexOf(bindMark) !== -1)
+        return true;
+
+    // 打上标记，防止重复绑定
+    el.setAttribute('class', el.getAttribute('class') + ' ' + bindMark);
+
+    var vue = new Vue({
+        data: {
+            items: []
+        },
+        created: function () {
+            var that = this;
+            _search_project_by_tag(keyword, function (rsp) {
+                that.items = rsp
+            })
+        },
+        render: function (h) {
+            var that = this;
+            return h('list', {
+                attrs: {
+                    items: that.items
+                },
+            })
+        }
+    })
+
+    var parent = el.parentNode
+    var items = parent.getElementsByClassName("col-12")
+    for (var i = 0; i < 30; i++) {
+        parent.removeChild(parent.getElementsByClassName("col-12")[0])
+    }
+    insertAfter(vue.$mount().$el, el)
+
+    return false;
+};
+
 
 /**
  * 绑定组件到相关元素中
@@ -128,9 +198,15 @@ var _bind_project_remarks = function () {
     var project, projects, project_name, i;
 
     //项目列表搜索框
-    var search = document.getElementsByClassName('TableObject')
-    if (search !== null) {
-        _create_search_dom(document.getElementsByClassName('position-relative')[5], "")
+    var search = document.getElementsByClassName('TableObject-item')
+    if (search !== null && search.length > 0) {
+        var inputs = search[0].getElementsByTagName('input')
+        for (i = 0; i < inputs.length; i++) {
+            if (inputs[i].getAttribute("type") == 'search') {
+                _create_search_dom(inputs[i], "")
+                break
+            }
+        }
     }
 
     // 项目页
@@ -216,7 +292,7 @@ var _search_project_by_tag = function (tag_name, callback) {
         var array = new Array()
         for (var i = 0; i < rsp.items.length; i++) {
             for (var j = 0; j < rsp.items[i].tags.length; j++) {
-                if (rsp.items[i].tags[j] == tag_name) {
+                if (rsp.items[i].tags[j].indexOf(tag_name) != -1) {
                     array.push(rsp.items[i])
                     break
                 }
@@ -235,9 +311,13 @@ var _search_project_by_tag = function (tag_name, callback) {
  */
 var _save_project_remarks = function (project_name, username, value) {
     _get_project_remarks(null, null, function (rsp) {
-        if (project_name == null) {
+        if (project_name == null || project_name == '') {
             return
         }
+        if (project_name.indexOf("/") == 0) {
+            project_name = project_name.substring(1, project_name.length)
+        }
+
         if (rsp.items == undefined) {
             rsp.items = []
         }
