@@ -28,6 +28,9 @@ var _get_github_username = function () {
  * @private
  */
 var _create_project_remark_dom = function (el, project_name, class_name, insert_before) {
+    if (project_name.indexOf("/") == 0) {
+        project_name = project_name.substring(1, project_name.length)
+    }
     // 如果 dom 已经被创建则直接返回 true
     if (el.getAttribute != null &&
         el.getAttribute('class') != null &&
@@ -97,7 +100,7 @@ var _create_project_remark_dom = function (el, project_name, class_name, insert_
  * @returns {boolean}
  * @private
  */
-var _create_search_dom = function (el, project_name) {
+var _create_search_dom = function (el) {
     // 如果 dom 已经被创建则直接返回 true
     if (el.getAttribute != null &&
         el.getAttribute('class') != null &&
@@ -203,7 +206,7 @@ var _bind_project_remarks = function () {
         var inputs = search[0].getElementsByTagName('input')
         for (i = 0; i < inputs.length; i++) {
             if (inputs[i].getAttribute("type") == 'search') {
-                _create_search_dom(inputs[i], "")
+                _create_search_dom(inputs[i])
                 break
             }
         }
