@@ -17,6 +17,7 @@
 }
 
 .el-tag {
+    vertical-align: middle;
     margin-right: 10px;
     cursor: pointer;
     margin-bottom: 5px;
@@ -25,6 +26,7 @@
 
 .button-new-tag {
     height: 24px;
+    vertical-align: middle;
     padding-top: 0;
     padding-bottom: 0;
     margin-bottom: 5px;
