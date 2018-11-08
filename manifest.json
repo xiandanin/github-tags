@@ -1,6 +1,6 @@
 {
   "name": "GithubTags",
-  "version": "1.0",
+  "version": "1.0.1",
   "description": "给Github项目添加标签",
   "manifest_version": 2,
   "icons": {
@@ -36,7 +36,7 @@
   ],
   "permissions": [
     "storage",
-    "notifications" // 通知
+    "notifications"
   ],
   "web_accessible_resources": [
     "fonts/element-icons.woff",
