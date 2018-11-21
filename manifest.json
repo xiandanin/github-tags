@@ -1,6 +1,6 @@
 {
   "name": "GithubTags",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "给Github项目添加标签",
   "manifest_version": 2,
   "icons": {
