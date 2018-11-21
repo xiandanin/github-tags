@@ -42,5 +42,6 @@
     "fonts/element-icons.woff",
     "fonts/element-icons.ttf"
   ],
+  "content_security_policy": "script-src 'self' https://cdn.bootcss.com; object-src 'self'",
   "homepage_url": "https://github.com/dengyuhan/github-tags"
 }
