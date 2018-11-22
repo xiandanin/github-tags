@@ -28,7 +28,7 @@ var _get_github_username = function () {
  * @private
  */
 var _create_project_remark_dom = function (el, project_name, class_name, insert_before) {
-    if (project_name.indexOf("/") == 0) {
+    if (project_name != undefined && project_name.indexOf("/") == 0) {
         project_name = project_name.substring(1, project_name.length)
     }
     // 如果 dom 已经被创建则直接返回 true
@@ -62,6 +62,7 @@ var _create_project_remark_dom = function (el, project_name, class_name, insert_
                     attrs: {
                         tags: that.tags,
                         edit: that.edit,
+                        name: project_name,
                         class: class_name
                     },
                     on: {
@@ -109,7 +110,6 @@ var _create_search_dom = function (el) {
 
     // 打上标记，防止重复绑定
     el.setAttribute('class', el.getAttribute('class') + ' ' + bindMark);
-    //el.oninput = vue.handlerChangeValue(el.value)
 
     var vue = new Vue({
             data: {},
@@ -119,27 +119,55 @@ var _create_search_dom = function (el) {
                     attrs: {
                         class: "btn",
                         href: "#",
-                        style: "margin-right:8px"
+                        style: "margin-right:8px;margin-left:8px;float: left;"
                     },
                     domProps: {
                         innerHTML: "按标签搜索"
                     },
                     on: {
                         click: function (event) {
-                            _create_search_list_dom(el.value)
+                            _create_search_list_dom(document.getElementById("search_input").value)
                         },
                     }
                 })
             }
         })
     ;
-    var nav = document.getElementsByClassName("TableObject")
-    if (nav != null) {
-        var as = nav[0].getElementsByTagName("details")
-        if (as != null) {
-            as[0].parentNode.insertBefore(vue.$mount().$el, as[0])
+    var div = document.createElement("div")
+
+    var input = document.createElement("input")
+    input.id = "search_input"
+    input.style = "width:400px;float: left;"
+    input.type = "search"
+    input.name = "q"
+    input.className = "form-control"
+    input.autocapitalize = "off"
+    input.autocomplete = "off"
+    input.value = getUrlParams("q")
+
+    var button = document.createElement("button")
+    var search_function = function () {
+        var url = window.location.href
+        if (url.indexOf("&q") != -1) {
+            window.location.href = url.substring(0, url.indexOf("&q")) + "&q=" + input.value
+        } else {
+            window.location.href = url + "&q=" + input.value
         }
     }
+    button.onclick = search_function
+    button.className = "btn"
+    button.innerHTML = "<svg class=\"octicon octicon-search\" style=\"margin-right: 10px;vertical-align:middle\" viewBox=\"0 0 16 16\" version=\"1.1\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path fill-rule=\"evenodd\" d=\"M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z\"></path></svg>搜索"
+
+    input.addEventListener("keypress", function () {
+        if (event.keyCode == 13) {
+            search_function()
+        }
+    })
+
+    div.appendChild(input)
+    div.appendChild(vue.$mount().$el)
+    div.appendChild(button)
+    el.parentNode.insertBefore(div, el)
     return false;
 };
 
@@ -152,15 +180,7 @@ var _create_search_dom = function (el) {
  * @private
  */
 var _create_search_list_dom = function (keyword) {
-    var el = document.getElementsByClassName("TableObject")[0]
-    // 如果 dom 已经被创建则直接返回 true
-    if (el.getAttribute != null &&
-        el.getAttribute('class') != null &&
-        el.getAttribute('class').indexOf(bindMark) !== -1)
-        return true;
-
-    // 打上标记，防止重复绑定
-    el.setAttribute('class', el.getAttribute('class') + ' ' + bindMark);
+    var el = document.getElementsByClassName("col-lg-12")[0]
 
     var vue = new Vue({
         data: {
@@ -182,12 +202,26 @@ var _create_search_list_dom = function (keyword) {
         }
     })
 
-    var parent = el.parentNode
-    var items = parent.getElementsByClassName("col-12")
-    for (var i = 0; i < 30; i++) {
-        parent.removeChild(parent.getElementsByClassName("col-12")[0])
+    //计算出已存在item数量
+    var childNodes = el.childNodes
+    var itemCount = 0
+    for (var i = 0; i < childNodes.length; i++) {
+        if (childNodes[i].className != undefined && childNodes[i].className.indexOf("col-12") != -1) {
+            itemCount++
+        }
     }
-    insertAfter(vue.$mount().$el, el)
+    //先清空现有的item
+    for (var i = 0; i < itemCount; i++) {
+        el.removeChild(el.getElementsByClassName("col-12")[0])
+    }
+
+    var result_container = document.getElementsByClassName("search-result-container")
+    //如果之前已经有搜索结果 先删除掉之前的
+    if (result_container != null && result_container.length > 0) {
+        el.removeChild(result_container[0])
+    }
+    var paginate = document.getElementsByClassName("paginate-container")[0]
+    el.insertBefore(vue.$mount().$el, paginate)
 
     return false;
 };
@@ -200,26 +234,28 @@ var _create_search_list_dom = function (keyword) {
 var _bind_project_remarks = function () {
     var project, projects, project_name, i;
 
-    //项目列表搜索框
-    var search = document.getElementsByClassName('TableObject-item')
-    if (search !== null && search.length > 0) {
-        var inputs = search[0].getElementsByTagName('input')
-        for (i = 0; i < inputs.length; i++) {
-            if (inputs[i].getAttribute("type") == 'search') {
-                _create_search_dom(inputs[i])
-                break
-            }
-        }
+    var repositories = document.getElementsByClassName('text-uppercase')
+    if (repositories !== null && repositories.length > 0) {
+        var details = repositories[0].parentNode.getElementsByTagName("details")
+        _create_search_dom(details[0])
+        repositories[0].parentNode.removeChild(repositories[0])
     }
 
-    // 项目页
+    // 项目详情页
     if (document.getElementsByClassName('repohead-details-container').length === 1 &&
         document.getElementsByClassName('repohead-details-container')[0].getElementsByTagName('h1').length === 1) {
         project = document.getElementsByClassName('repohead-details-container')[0].getElementsByTagName('h1')[0];
         projects = project.getElementsByTagName('a');
         for (i = 0; i < projects.length; i++) {
             if (projects[i].getAttribute('data-pjax') !== null) {
-                project_name = project.getElementsByTagName('a')[i].getAttribute('href');
+                var fork = project.getElementsByClassName("fork-flag")
+                //如果是fork的 拿fork的名字
+                if (fork != null && fork.length > 0) {
+                    project_name = fork[0].getElementsByTagName("a")[0].getAttribute('href');
+                } else {
+                    //如果fork没有拿到直接取项目名
+                    project_name = project.getElementsByTagName('a')[i].getAttribute('href');
+                }
                 break;
             }
         }
@@ -233,11 +269,21 @@ var _bind_project_remarks = function () {
         var list = document.getElementById('js-pjax-container');
         projects = list.getElementsByTagName('h3');
         for (i = 0; i < projects.length; i++) {
-            if (projects[i].getElementsByTagName('a').length === 1) {
-                project_name = projects[i].getElementsByTagName('a')[0].getAttribute('href');
-
-                if (project_name !== null)
-                    _create_project_remark_dom(projects[i], project_name, "repository_detail_tags_container", false);
+            //如果有fork的 取fork的名称
+            var forkSpan = projects[i].parentNode.getElementsByClassName("text-gray")
+            if (forkSpan != null && forkSpan.length > 0) {
+                var forkA = forkSpan[0].getElementsByTagName("a")
+                if (forkA != null && forkA.length > 0) {
+                    project_name = forkA[0].getAttribute('href');
+                }
+            } else {
+                //如果没有fork才取项目名
+                if (projects[i].getElementsByTagName('a').length === 1) {
+                    project_name = projects[i].getElementsByTagName('a')[0].getAttribute('href');
+                }
+            }
+            if (project_name !== null) {
+                _create_project_remark_dom(projects[i], project_name, "repository_detail_tags_container", false);
             }
         }
     }
@@ -247,9 +293,24 @@ var _bind_project_remarks = function () {
         document.getElementsByClassName('pinned-repo-item').length > 0) {
         projects = document.getElementsByClassName('pinned-repo-item');
         for (i = 0; i < projects.length; i++) {
-            project_name = projects[i].getElementsByTagName("a")[0].getAttribute('href');
+            var createClass = "stars_list_container";
             var p = projects[i].getElementsByClassName('pinned-repo-desc');
-            _create_project_remark_dom(p[0], project_name, "stars_list_container", true);
+            //先检查fork的
+            var forkTag = projects[i].getElementsByClassName("text-gray")
+            if (forkTag != null && forkTag.length > 0) {
+                var forkA = forkTag[0].getElementsByTagName("a")
+                if (forkA != null && forkA.length > 0) {
+                    project_name = forkA[0].getAttribute('href');
+                    createClass = "stars_list_fork";
+                }
+
+            }
+
+            if (project_name == undefined || project_name == null || project_name == '') {
+                project_name = projects[i].getElementsByTagName("a")[0].getAttribute('href');
+            }
+
+            _create_project_remark_dom(p[0], project_name, createClass, true);
         }
     }
 };
@@ -295,12 +356,16 @@ var _search_project_by_tag = function (tag_name, callback) {
         var array = new Array()
         for (var i = 0; i < rsp.items.length; i++) {
             for (var j = 0; j < rsp.items[i].tags.length; j++) {
-                if (rsp.items[i].tags[j].indexOf(tag_name) != -1) {
-                    array.push(rsp.items[i])
-                    break
+                var item_tag = rsp.items[i].tags[j]
+                if (item_tag != null && item_tag != undefined && item_tag != "") {
+                    if (item_tag.toLowerCase().indexOf(tag_name.toLowerCase()) != -1) {
+                        array.push(rsp.items[i])
+                        break
+                    }
                 }
             }
         }
+
         callback(array)
     })
 }
@@ -378,4 +443,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+function getUrlParams(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null)
+        return unescape(r[2]);
+    return null;
 }

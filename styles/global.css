@@ -1,6 +1,9 @@
 .stars_list_container{
     margin-top: 10px;
 }
+.stars_list_fork{
+    margin-top: 0px;
+}
 .repository_detail_tags_container{
     width: 100%;
     background-color: transparent;
