@@ -296,17 +296,14 @@ var _bind_project_remarks = function () {
             var createClass = "stars_list_container";
             var p = projects[i].getElementsByClassName('pinned-repo-desc');
             //先检查fork的
-            var forkTag = projects[i].getElementsByClassName("text-gray")
+            var forkTag = projects[i].getElementsByClassName("text-gray text-small mb-2")
             if (forkTag != null && forkTag.length > 0) {
                 var forkA = forkTag[0].getElementsByTagName("a")
                 if (forkA != null && forkA.length > 0) {
                     project_name = forkA[0].getAttribute('href');
                     createClass = "stars_list_fork";
                 }
-
-            }
-
-            if (project_name == undefined || project_name == null || project_name == '') {
+            }else{
                 project_name = projects[i].getElementsByTagName("a")[0].getAttribute('href');
             }
 

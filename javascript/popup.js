@@ -24,7 +24,7 @@ window.onload = function () {
         chrome.storage.sync.get('items', function (rsp) {
             // 创建隐藏的可下载链接
             var date = new Date();
-            var filename = "github-tags_" + date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes() + ".json";
+            var filename = "github-tags_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes() + ".json";
             var eleLink = document.createElement('a');
             eleLink.download = filename;
             eleLink.style.display = 'none';
