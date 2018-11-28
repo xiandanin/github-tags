@@ -303,7 +303,7 @@ var _bind_project_remarks = function () {
                     project_name = forkA[0].getAttribute('href');
                     createClass = "stars_list_fork";
                 }
-            }else{
+            } else {
                 project_name = projects[i].getElementsByTagName("a")[0].getAttribute('href');
             }
 
@@ -311,6 +311,7 @@ var _bind_project_remarks = function () {
         }
     }
 };
+
 
 /**
  * 读取配置项
@@ -320,7 +321,27 @@ var _bind_project_remarks = function () {
  * @private
  */
 var _get_project_remarks = function (project_name, username, callback) {
-    chrome.storage.sync.get('items', function (rsp) {
+    chrome.storage.local.get('items', function (rsp) {
+        if (JSON.stringify(rsp)!='{}') {
+            //有数据说明迁移过了 直接取本地
+            _get_project_remarks_v2(project_name, username, callback)
+        } else {
+            //没有数据说明未迁移 从同步迁移到本地
+            chrome.storage.sync.get('items', function (rsp) {
+                chrome.storage.local.set(rsp);
+                chrome.storage.sync.set({'items': null}, function () {
+
+                });
+
+                _get_project_remarks_v2(project_name, username, callback)
+            });
+        }
+
+    });
+};
+
+var _get_project_remarks_v2 = function (project_name, username, callback) {
+    chrome.storage.local.get('items', function (rsp) {
         if (JSON.stringify(rsp) == '{}') {
             var result = {}
             result.project_name = project_name
@@ -332,7 +353,7 @@ var _get_project_remarks = function (project_name, username, callback) {
         }
         callback(rsp);
     });
-};
+}
 
 var _get_project_tags = function (project_name, username, callback) {
     _get_project_remarks(project_name, username, function (rsp) {
@@ -402,7 +423,7 @@ var _save_project_remarks = function (project_name, username, value) {
             rsp.items.push(result)
         }
         //console.log("保存成功\n" + JSON.stringify(rsp, null, 2))
-        chrome.storage.sync.set(rsp);
+        chrome.storage.local.set(rsp);
     });
 };
 

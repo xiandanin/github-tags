@@ -21,7 +21,7 @@ window.onload = function () {
         input.click()
     }
     document.getElementById("btn_export").onclick = function () {
-        chrome.storage.sync.get('items', function (rsp) {
+        chrome.storage.local.get('items', function (rsp) {
             // 创建隐藏的可下载链接
             var date = new Date();
             var filename = "github-tags_" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + "_" + date.getHours() + "-" + date.getMinutes() + ".json";
