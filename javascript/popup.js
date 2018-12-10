@@ -8,7 +8,7 @@ window.onload = function () {
             reader.readAsText(this.files[0], "UTF-8");//读取文件
             reader.onload = function (evt) { //读取完文件之后会回来这里
                 var json = evt.target.result; // 读取文件内容
-                chrome.storage.sync.set(JSON.parse(json));
+                chrome.storage.local.set(JSON.parse(json));
 
                 chrome.notifications.create(null, {
                     type: 'basic',
