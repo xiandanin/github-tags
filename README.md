@@ -20,12 +20,14 @@
 
 ### 旧版数据迁移到云
 1.先填入`Application ID`和`REST API Key`并保存；  
-2.如果已有Json文件备份，直接点击`导入旧版数据到云端`，看到成功的提示后，可以在比目云的管理后台，查看一下有没有数据；  
+2.如果已有Json文件备份，直接点击`导入旧版数据到云端`，看到成功的提示后，可以在比目云的管理后台，查看一下有没有数据；
+
 <img src="screenshot/5.png" width = 300/>
 
 <img src="screenshot/7.png" width = 300/>
 
-3.如果没有备份旧版的Json文件，点击`导出旧版数据`，得到Json文件后操作第2步。 
+3.如果没有备份旧版的Json文件，点击`导出旧版数据`，得到Json文件后操作第2步。
+
 <img src="screenshot/6.png" width = 300/>
 
 * 如果迁移失败，不要卸载插件，不要清除数据，先导出Json文件备份，提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
