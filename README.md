@@ -14,10 +14,6 @@
 
 <img src="screenshot/4.png" width = 400/>
 
-##### 因为用的是免费版，所以会有比较多的限制，如果有更好的云同步方案请提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
-
->#### 想继续使用本地数据版的可以安装旧版[1.0.6](https://github.com/dengyuhan/github-tags/releases/tag/1.0.6)
-
 ### 旧版数据迁移到云
 1.先填入`Application ID`和`REST API Key`并保存；  
 2.如果已有Json文件备份，直接点击`导入旧版数据到云端`，看到成功的提示后，可以在比目云的管理后台，查看一下有没有数据；
@@ -30,7 +26,11 @@
 
 <img src="screenshot/6.png" width = 300/>
 
-* 如果迁移失败，不要卸载插件，不要清除数据，先导出Json文件备份，提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
+##### 因为用的是免费版，所以会有比较多的限制，如果有更好的云同步方案请提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
+
+##### 想继续使用本地数据版的可以安装旧版[1.0.6](https://github.com/dengyuhan/github-tags/releases/tag/1.0.6)
+
+##### *如果迁移失败，不要卸载插件，不要清除数据，先导出Json文件备份，提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
 
 ### 参考项目
 [Git-Remarks](https://github.com/hoythan/Git-Remarks)
