@@ -1,9 +1,17 @@
 # GithubTags
 给Github项目添加标签的Chrome插件，支持按标签搜索，数据支持云同步
 
-[Chrome插件商店安装](https://chrome.google.com/webstore/detail/jfppflnlpiekbiglfgiajddmkiglapog)
+[从Chrome插件商店安装](https://chrome.google.com/webstore/detail/jfppflnlpiekbiglfgiajddmkiglapog)
 
 ![](screenshot/1.gif)
+
+#### 项目详情
+
+<img src="screenshot/2.png" width = 600/>
+
+#### 个人主页
+
+<img src="screenshot/8.png" width = 600/>
 
 ## 云同步
 数据存储用的是[比目云](https://www.bmob.cn/app/list)，但只会用到它的免费服务，所以需要先到网站注册账号并创建一个应用，再进入到设置就会看到`Application ID`和`REST API Key`
