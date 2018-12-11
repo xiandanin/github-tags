@@ -2,6 +2,22 @@
 // 标记当前元素已经被创建并绑定
 var bindMark = '__bind_remark';
 var defalutUserName = 'default_user';
+
+var initBmob = false
+
+function callBmob(callback) {
+    //初始化Bmob
+    if (initBmob) {
+        callback()
+    } else {
+        chrome.storage.sync.get(null, function (rsp) {
+            Bmob.initialize(rsp.appid, rsp.apikey);
+            initBmob = true
+            callback()
+        });
+    }
+}
+
 /**
  * 获取 github 用户名
  * @returns {string}
@@ -51,10 +67,10 @@ var _create_project_remark_dom = function (el, project_name, class_name, insert_
             },
             created: function () {
                 var that = this;
-                _get_project_tags(project_name, _get_github_username(), function (tags) {
+                get_tags_by_project_name(project_name, function (tags) {
                     that.tags = tags;
                     that.edit = JSON.stringify(tags) == '[]';
-                });
+                })
             },
             render: function (h) {
                 var that = this;
@@ -67,6 +83,7 @@ var _create_project_remark_dom = function (el, project_name, class_name, insert_
                     },
                     on: {
                         change: function (event) {
+                            save_project_tags(project_name, event)
                             _save_project_remarks(project_name, _get_github_username(), event)
                         },
                         changeEdit: function (edit) {
@@ -151,7 +168,7 @@ var _create_search_dom = function (el) {
         if (url.indexOf("&q") != -1) {
             window.location.href = url.substring(0, url.indexOf("&q")) + "&q=" + input.value
         } else {
-            window.location.href = url + "&q=" + input.value
+            window.location.href = url + "&utf8=✓&q=" + input.value
         }
     }
     button.onclick = search_function
@@ -188,7 +205,8 @@ var _create_search_list_dom = function (keyword) {
         },
         created: function () {
             var that = this;
-            _search_project_by_tag(keyword, function (rsp) {
+            search_project_by_tags(keyword.split(","), function (rsp) {
+                console.log("搜索结果：\n" + JSON.stringify(rsp, null, 2))
                 that.items = rsp
             })
         },
@@ -322,7 +340,7 @@ var _bind_project_remarks = function () {
  */
 var _get_project_remarks = function (project_name, username, callback) {
     chrome.storage.local.get('items', function (rsp) {
-        if (JSON.stringify(rsp)!='{}') {
+        if (JSON.stringify(rsp) != '{}') {
             //有数据说明迁移过了 直接取本地
             _get_project_remarks_v2(project_name, username, callback)
         } else {
@@ -426,6 +444,118 @@ var _save_project_remarks = function (project_name, username, value) {
         chrome.storage.local.set(rsp);
     });
 };
+
+/**
+ * 根据项目名称获取标签列表
+ * @param project_name
+ */
+function get_tags_by_project_name(project_name, callback) {
+    callBmob(function () {
+        //先查出这个项目的id
+        const query = Bmob.Query("project_tags");
+        query.equalTo("project_name", '==', project_name);
+        query.select("tag_name_array");
+        query.find().then(res => {
+            if (res != null && res.length > 0) {
+                callback(JSON.parse(res[0].tag_name_array))
+            }
+        }).catch(err => {
+            console.log(err)
+        });
+    })
+}
+
+/**
+ * 保存项目标签
+ * @param project_name
+ * @param value
+ */
+function save_project_tags(project_name, value) {
+    callBmob(function () {
+        //先根据name查找项目
+        const query = Bmob.Query('project_tags');
+        query.equalTo("project_name", '==', project_name);
+        query.find().then(results => {
+            const query = Bmob.Query('project_tags');
+            query.set('tag_name_array', JSON.stringify(value))
+            if (results.length <= 0) {
+                //新增
+                query.set("project_name", project_name)
+            } else {
+                //修改
+                query.set("id", results[0].objectId)
+            }
+            query.save().then(obj => {
+                console.log(JSON.stringify(obj))
+            }).catch(err => {
+                console.log(err)
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+    })
+}
+
+
+/**
+ * 根据标签找项目
+ */
+function get_all_project_data(callback) {
+    callBmob(function () {
+        //每页数量
+        var pageSize = 1000
+        const countQuery = Bmob.Query('project_tags');
+        countQuery.count().then(count => {
+            var allData = new Array()
+            //一共几页
+            var pageCount = Math.ceil(count / pageSize)
+            for (let page = 0; page < pageCount; page++) {
+                const query = Bmob.Query("project_tags");
+                query.skip(page * pageSize);
+                query.order("-createdAt");
+                query.limit(pageSize);
+                query.find().then(res => {
+                    allData.push.apply(allData, res);
+                    if (page == pageCount - 1) {
+                        //最后一页 请求完就直接返回
+                        callback(allData)
+                    }
+                });
+            }
+        });
+    })
+}
+
+/**
+ * 根据标签找项目列表
+ * @param tag_array
+ * @param callback
+ */
+function search_project_by_tags(keyword_array, callback) {
+    get_all_project_data(function (all) {
+        var array = new Array()
+        for (let i = 0; i < all.length; i++) {
+            var item = all[i]
+            var tag_array_json = item.tag_name_array
+            if (tag_array_json != null && tag_array_json.length > 0) {
+                var tag_array = JSON.parse(tag_array_json)
+                for (let j = 0; j < tag_array.length; j++) {
+                    if (tag_array[j] != null && tag_array[j] != undefined && tag_array[j] != "") {
+                        for (let k = 0; k < keyword_array.length; k++) {
+                            //if (tag_array[j].toLowerCase().indexOf(keyword_array[k].toLowerCase()) != -1) {
+                            if (tag_array[j].toLowerCase() == keyword_array[k].toLowerCase()) {
+                                item.tags = tag_array
+                                array.push(item)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        callback(array)
+    })
+}
 
 /**
  * 监听 dom 的刷新以重新绑定相关组件

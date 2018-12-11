@@ -3,25 +3,89 @@
 <head>
     <title>GithubTags</title>
     <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script type="text/javascript" src="javascript/lib/Bmob-1.6.6.min.js"></script>
     <script type="text/javascript" src="javascript/popup.js"></script>
 </head>
 <style>
-    .action{
-        text-align: center;
-        display: block;
-        width: 150px;
+    body {
+        font-size: 14px;
     }
-    .github{
-        margin-bottom: 20px;
-        text-align: center;
+
+    .container {
+        padding: 10px;
+        width: 400px;
+        font-size: 12px;
+    }
+
+    .input-group-sm {
+        height: 25px;
+    }
+
+    .btn-sm {
+        height: 25px;
+        font-size: 12px;
+    }
+
+    .form-control-sm, .input-group-sm > .form-control, .input-group-sm > .input-group-append > .btn, .input-group-sm > .input-group-append > .input-group-text, .input-group-sm > .input-group-prepend > .btn, .input-group-sm > .input-group-prepend > .input-group-text {
+        font-size: 12px;
+    }
+
+    .input-group-text {
+        width: 130px;
+    }
+
+    .btn-save {
+        width: 100px;
+    }
+
+    .form-item-margin-top {
+        margin-top: 7px;
+    }
+
+    #message {
+        font-size: 16px;
+    }
+    #div-old-version{
+        margin-bottom: 10px;
     }
 </style>
 <body>
-<div class="github"><a href="https://github.com/dengyuhan/github-tags" target="_blank">点个赞吧</a></div>
+<!--<div><a href="https://github.com/dengyuhan/github-tags" target="_blank">点个赞吧</a></div>-->
 
-<div class="action">
-    <button id="btn_import">导入</button>
-    <button id="btn_export">导出</button>
+<div class="container">
+    <div id="div-old-version">
+        <div>
+            <button type="button" id="btn-import-migrate" class="btn btn-outline-secondary btn-sm">导入旧版数据到云端</button>
+            <button type="button" id="btn-export-old" class="btn btn-outline-secondary btn-sm" style="margin-left: 10px">
+                导出旧版数据
+            </button>
+        </div>
+        <hr/>
+    </div>
+
+    <div><a href="https://github.com/dengyuhan/github-tags#云同步" target="_blank">如何开启云同步？</a>
+        <a href="https://github.com/dengyuhan/github-tags" target="_blank" style="margin-left: 20px">顺手Star</a>
+        <a href="#" id="btn-edit-appid" style="float: right">编辑</a></div>
+    <div class="input-group input-group-sm form-item-margin-top">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Bmob Application ID</span>
+        </div>
+        <input type="text" id="bmob-appid" class="form-control" readonly placeholder="Application ID"/>
+    </div>
+    <div class="input-group input-group-sm form-item-margin-top">
+        <div class="input-group-prepend">
+            <span class="input-group-text">Bmob REST API Key</span>
+        </div>
+        <input type="text" id="bmob-apikey" class="form-control" readonly placeholder="REST API Key"/>
+    </div>
+    <div class="form-item-margin-top" style="text-align: right">
+        <button type="button" id="btn-save-appid"
+                class="btn btn-outline-dark btn-sm btn-save">保存
+        </button>
+    </div>
+    <div id="message" style="display: none"></div>
 </div>
 </body>
 </html>

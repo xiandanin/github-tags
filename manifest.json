@@ -1,7 +1,7 @@
 {
   "name": "GithubTags",
-  "version": "1.0.6",
-  "description": "给Github项目添加标签",
+  "version": "1.0.7",
+  "description": "给Github项目添加标签，支持按标签搜索，支持数据云同步",
   "manifest_version": 2,
   "icons": {
     "16": "images/icon.png",
@@ -24,6 +24,7 @@
         "styles/github/index.css"
       ],
       "js": [
+        "javascript/lib/Bmob-1.6.6.min.js",
         "javascript/lib/vue.js",
         "javascript/lib/element-ui.js",
         "javascript/github/tag.js",
@@ -36,12 +37,13 @@
   ],
   "permissions": [
     "storage",
-    "notifications"
+    "notifications",
+    "https://*.bmobcloud.com/"
   ],
   "web_accessible_resources": [
     "fonts/element-icons.woff",
     "fonts/element-icons.ttf"
   ],
-  "content_security_policy": "script-src 'self' https://cdn.bootcss.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://cdn.bootcss.com; connect-src 'self' https://*.bmobcloud.com; object-src 'self'",
   "homepage_url": "https://github.com/dengyuhan/github-tags"
 }
