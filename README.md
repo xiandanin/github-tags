@@ -34,7 +34,7 @@
 
 <img src="screenshot/6.png" width = 300/>
 
-##### 因为用的是免费版，所以会有比较多的限制，如果有更好的云同步方案请提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
+##### 因为用的是免费版，所以会有比较多的限制，有时可能会不太稳定，可以重试或者等一会再试，如果有更好的云同步方案请提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
 
 ##### 想继续使用本地数据版的可以安装旧版[1.0.6](https://github.com/dengyuhan/github-tags/releases/tag/1.0.6)
 

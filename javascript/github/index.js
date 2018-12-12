@@ -288,7 +288,7 @@ var _bind_project_remarks = function () {
         projects = list.getElementsByTagName('h3');
         for (i = 0; i < projects.length; i++) {
             //如果有fork的 取fork的名称
-            var forkSpan = projects[i].parentNode.getElementsByClassName("text-gray")
+            var forkSpan = projects[i].parentNode.getElementsByClassName("f6 text-gray mb-1")
             if (forkSpan != null && forkSpan.length > 0) {
                 var forkA = forkSpan[0].getElementsByTagName("a")
                 if (forkA != null && forkA.length > 0) {
@@ -300,7 +300,7 @@ var _bind_project_remarks = function () {
                     project_name = projects[i].getElementsByTagName('a')[0].getAttribute('href');
                 }
             }
-            if (project_name !== null) {
+            if (project_name !== null && project_name != undefined && project_name != "") {
                 _create_project_remark_dom(projects[i], project_name, "repository_detail_tags_container", false);
             }
         }
@@ -450,11 +450,15 @@ var _save_project_remarks = function (project_name, username, value) {
  * @param project_name
  */
 function get_tags_by_project_name(project_name, callback) {
+    if (project_name == null || project_name == undefined || project_name == "") {
+        return
+    }
     callBmob(function () {
         //先查出这个项目的id
         const query = Bmob.Query("project_tags");
         query.equalTo("project_name", '==', project_name);
         query.select("tag_name_array");
+        query.limit(1)
         query.find().then(res => {
             if (res != null && res.length > 0) {
                 callback(JSON.parse(res[0].tag_name_array))
@@ -595,8 +599,8 @@ function insertAfter(newNode, referenceNode) {
 
 function getUrlParams(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
-    var r = window.location.search.substr(1).match(reg);
+    var r = encodeURI(window.location.search).substr(1).match(reg);
     if (r != null)
-        return unescape(r[2]);
+        return decodeURI(unescape(r[2]));
     return null;
 }
