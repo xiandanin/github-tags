@@ -4,6 +4,7 @@ var btn_save_id = "btn-save-appid";
 var btn_edit_id = "btn-edit-appid";
 var old_version_id = "div-old-version";
 
+var current_version = "1.0.9"
 
 window.onload = function () {
     chrome.storage.sync.get("is_migrate", function (rsp) {
@@ -102,10 +103,15 @@ window.onload = function () {
         if (ajax.readyState == 4 && ajax.status == 200) {
             document.getElementById("update_container").removeAttribute("style")
             var response = JSON.parse(ajax.responseText)
-            var version = document.getElementById("update_version")
-            version.setAttribute("href", response.link)
-            version.innerHTML = "v"+response.version
-            document.getElementById("update_message").innerHTML = response.message
+            console.log((current_version == response.version)+"--->"+current_version+"--->"+response.version);
+            if (current_version < response.version) {
+                var version = document.getElementById("update_version")
+                version.setAttribute("href", response.link)
+                version.innerHTML = "v" + response.version
+                document.getElementById("update_message").innerHTML = response.message
+            } else {
+                document.getElementById("update_container").style.display = "none"
+            }
             console.log(ajax.responseText);
         } else {
             document.getElementById("update_container").style.display = "none"

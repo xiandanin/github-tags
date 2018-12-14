@@ -1,8 +1,12 @@
 # GithubTags
 给Github项目添加标签的Chrome插件，支持按标签搜索，数据支持云同步
 
+## 安装
 [从Chrome插件商店安装](https://chrome.google.com/webstore/detail/jfppflnlpiekbiglfgiajddmkiglapog)
 
+[下载crx文件安装](https://github.com/dengyuhan/github-tags/releases)
+
+## 截图
 ![](screenshot/1.gif)
 
 #### 项目详情
