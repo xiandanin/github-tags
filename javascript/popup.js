@@ -103,7 +103,6 @@ window.onload = function () {
         if (ajax.readyState == 4 && ajax.status == 200) {
             document.getElementById("update_container").removeAttribute("style")
             var response = JSON.parse(ajax.responseText)
-            console.log((current_version == response.version)+"--->"+current_version+"--->"+response.version);
             if (current_version < response.version) {
                 var version = document.getElementById("update_version")
                 version.setAttribute("href", response.link)
