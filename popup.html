@@ -47,18 +47,21 @@
     #message {
         font-size: 16px;
     }
-    #div-old-version{
+
+    #div-old-version {
         margin-bottom: 10px;
     }
 </style>
 <body>
-<!--<div><a href="https://github.com/dengyuhan/github-tags" target="_blank">点个赞吧</a></div>-->
 
 <div class="container">
     <div id="div-old-version">
         <div>
+            <div style="margin-bottom: 5px"><a href="https://github.com/dengyuhan/github-tags#旧版数据迁移到云" target="_blank">旧版本数据迁移</a>
+            </div>
             <button type="button" id="btn-import-migrate" class="btn btn-outline-secondary btn-sm">导入旧版数据到云端</button>
-            <button type="button" id="btn-export-old" class="btn btn-outline-secondary btn-sm" style="margin-left: 10px">
+            <button type="button" id="btn-export-old" class="btn btn-outline-secondary btn-sm"
+                    style="margin-left: 10px">
                 导出旧版数据
             </button>
         </div>
@@ -88,7 +91,11 @@
                 class="btn btn-outline-dark btn-sm btn-save">保存
         </button>
     </div>
-    <div id="message" style="display: none"></div>
+    <div id="update_container" style="display: none">
+        <hr/>
+        <div style="font-size: 14px;color: black">有新版本 <a id="update_version" target="_blank"></a></div>
+        <div id="update_message" style="color: #6f7180"></div>
+    </div>
 </div>
 </body>
 </html>

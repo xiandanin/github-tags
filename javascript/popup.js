@@ -8,9 +8,9 @@ var old_version_id = "div-old-version";
 window.onload = function () {
     chrome.storage.sync.get("is_migrate", function (rsp) {
         var display = rsp.is_migrate == true ? "none" : "block";
-        if (display){
+        if (display) {
             document.getElementById(old_version_id).removeAttribute("style")
-        } else{
+        } else {
             document.getElementById(old_version_id).style.display = "none"
         }
     })
@@ -93,6 +93,25 @@ window.onload = function () {
             document.body.removeChild(eleLink);
         });
     }
+
+    //更新提示
+    var ajax = new XMLHttpRequest();
+    ajax.open('get', 'https://raw.githubusercontent.com/dengyuhan/github-tags/master/update.json');
+    ajax.send();
+    ajax.onreadystatechange = function () {
+        if (ajax.readyState == 4 && ajax.status == 200) {
+            document.getElementById("update_container").removeAttribute("style")
+            var response = JSON.parse(ajax.responseText)
+            var version = document.getElementById("update_version")
+            version.setAttribute("href", response.link)
+            version.innerHTML = "v"+response.version
+            document.getElementById("update_message").innerHTML = response.message
+            console.log(ajax.responseText);
+        } else {
+            document.getElementById("update_container").style.display = "none"
+        }
+    }
+
 }
 
 /**
@@ -103,9 +122,9 @@ function setEditState(edit) {
     document.getElementById(appid_id).readOnly = !edit;
     document.getElementById(apikey_id).readOnly = !edit;
     document.getElementById(btn_edit_id).style.display = edit ? "none" : "block";
-    if (edit){
+    if (edit) {
         document.getElementById(btn_save_id).removeAttribute("style")
-    } else{
+    } else {
         document.getElementById(btn_save_id).style.display = edit ? "block" : "none";
     }
 }
@@ -156,18 +175,3 @@ function showMessage(message) {
         message: message
     });
 }
-
-/*
-function showMessage(content, success) {
-    var message = document.getElementById("message")
-    message.innerHTML = content
-    if (success) {
-        message.style.color = "#35d159"
-    } else {
-        message.style.color = "#dc3545"
-    }
-    message.style.display = "block"
-    setTimeout(function () {
-        message.style.display = "none"
-    }, 1500);
-}*/
