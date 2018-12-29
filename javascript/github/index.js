@@ -185,6 +185,9 @@ var _create_search_dom = function (el) {
     div.appendChild(vue.$mount().$el)
     div.appendChild(button)
     el.parentNode.insertBefore(div, el)
+
+    show_stars_tag_list(div)
+
     return false;
 };
 
@@ -386,7 +389,6 @@ var _get_project_tags = function (project_name, username, callback) {
     })
 }
 
-
 var _search_project_by_tag = function (tag_name, callback) {
     _get_project_remarks("", _get_github_username(), function (rsp) {
         var array = new Array()
@@ -444,6 +446,54 @@ var _save_project_remarks = function (project_name, username, value) {
         chrome.storage.local.set(rsp);
     });
 };
+
+/**
+ * 在stars页面列出所有标签
+ * @param project_name
+ * @param callback
+ */
+function show_stars_tag_list(container) {
+    var get_all_tags = function (callback) {
+        get_all_project_data(function (all) {
+            var array = new Array()
+            for (let i = 0; i < all.length; i++) {
+                var tags = JSON.parse(all[i].tag_name_array)
+                for (let j = 0; j < tags.length; j++) {
+                    if (!array.indexOf(tags[j])) {
+                        array.push(tags[j])
+                    }
+                }
+            }
+            callback(array)
+        })
+    }
+    chrome.storage.sync.get("is_show_stars_tags", function (rsp) {
+        console.log(JSON.stringify(rsp.is_show_stars_tags)+"---->")
+        if (rsp.is_show_stars_tags == true) {
+            get_all_tags(function (all_tags) {
+                console.log(JSON.stringify(all_tags))
+                var vue = new Vue({
+                    data: {},
+                    render: function (h) {
+                        var that = this;
+                        return h('el-tag', {
+                            attrs: {
+                                type: "success",
+                                size: "small"
+                            },
+                            on: {
+                                click: function (event) {
+
+                                }
+                            }
+                        })
+                    }
+                })
+                container.appendChild(vue.$mount().$el)
+            })
+        }
+    })
+}
 
 /**
  * 根据项目名称获取标签列表

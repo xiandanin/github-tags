@@ -3,6 +3,7 @@ var apikey_id = "bmob-apikey";
 var btn_save_id = "btn-save-appid";
 var btn_edit_id = "btn-edit-appid";
 var old_version_id = "div-old-version";
+var show_stars_tags = "show-stars-tags";
 
 var current_version = "1.0.9"
 
@@ -14,6 +15,13 @@ window.onload = function () {
         } else {
             document.getElementById(old_version_id).style.display = "none"
         }
+    })
+
+    chrome.storage.sync.get("is_show_stars_tags", function (rsp) {
+        if (JSON.stringify(rsp.is_show_stars_tags)=='{}') {
+            rsp.is_show_stars_tags = false
+        }
+        document.getElementById(show_stars_tags).checked = rsp.is_show_stars_tags
     })
 
     chrome.storage.sync.get(null, function (rsp) {
@@ -117,6 +125,9 @@ window.onload = function () {
         }
     }
 
+    document.getElementById(show_stars_tags).onchange = function (el) {
+        chrome.storage.sync.set({"is_show_stars_tags": document.getElementById(show_stars_tags).checked})
+    }
 }
 
 /**
@@ -169,6 +180,9 @@ function migrateLocalDataToCloud(json) {
 }
 
 function isAPPKeyEmpty(bmob) {
+    if (bmob == undefined || bmob.appid == undefined || bmob.apikey == undefined) {
+        return true
+    }
     return JSON.stringify(bmob) == '{}' || bmob.appid.length <= 0 || bmob.apikey.length <= 0
 }
 
