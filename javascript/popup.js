@@ -5,7 +5,7 @@ var btn_edit_id = "btn-edit-appid";
 var old_version_id = "div-old-version";
 var show_stars_tags = "show-stars-tags";
 
-var current_version = "1.0.9"
+var current_version = "1.1.0"
 
 window.onload = function () {
     chrome.storage.sync.get("is_migrate", function (rsp) {

@@ -44,5 +44,11 @@
 
 ##### *如果迁移失败，不要卸载插件，不要清除数据，先导出Json文件备份，提[issue](https://github.com/dengyuhan/github-tags/issues/new)告诉我
 
+
+## 更新说明
+地址栏输入`chrome://extensions`进入到扩展程序页面，点“更新”即可
+
+<img src="screenshot/update.png" width = 500/>
+
 ### 参考项目
 [Git-Remarks](https://github.com/hoythan/Git-Remarks)
