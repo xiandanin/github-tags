@@ -252,7 +252,7 @@ var _create_search_list_dom = function (keyword) {
 var _bind_project_remarks = function () {
     var project, projects, project_name, i;
 
-    var repositories = document.getElementsByClassName('text-uppercase')
+    var repositories = document.getElementsByClassName('h6 text-uppercase')
     if (repositories !== null && repositories.length > 0) {
         var details = repositories[0].parentNode.getElementsByTagName("details")
         _create_search_dom(details[0])
