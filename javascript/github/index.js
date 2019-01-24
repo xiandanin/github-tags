@@ -134,6 +134,7 @@ var _create_search_dom = function (el) {
                 var that = this;
                 return h('a', {
                     attrs: {
+                        id:"search_by_tag",
                         class: "btn",
                         href: "#",
                         style: "margin-right:8px;margin-left:8px;float: left;"
@@ -154,7 +155,7 @@ var _create_search_dom = function (el) {
 
     var input = document.createElement("input")
     input.id = "search_input"
-    input.style = "width:400px;float: left;"
+    input.style = "width:300px;float: left;"
     input.type = "search"
     input.name = "q"
     input.className = "form-control"
@@ -181,12 +182,33 @@ var _create_search_dom = function (el) {
         }
     })
 
+    var vue_all = new Vue({
+        data: {},
+        render: function (h) {
+            var that = this;
+            return h('a', {
+                attrs: {
+                    class: "btn",
+                    href: "#",
+                    style: "margin-right:8px;"
+                },
+                domProps: {
+                    innerHTML: "查看所有标签"
+                },
+                on: {
+                    click: function (event) {
+                        show_all_tags(div)
+                    },
+                }
+            })
+        }
+    })
+
     div.appendChild(input)
     div.appendChild(vue.$mount().$el)
+    div.appendChild(vue_all.$mount().$el)
     div.appendChild(button)
     el.parentNode.insertBefore(div, el)
-
-    show_stars_tag_list(div)
 
     return false;
 };
@@ -246,6 +268,72 @@ var _create_search_list_dom = function (keyword) {
 
     return false;
 };
+
+var get_all_tags = function (callback) {
+    get_all_project_data(function (all) {
+        var array = new Array()
+        //遍历A-Z
+        for (let k = "a".charCodeAt(); k <= "z".charCodeAt(); k++) {
+            var letterUpper = String.fromCharCode(k).toUpperCase()
+            //遍历所有标签
+            var letterArray = new Array()
+            for (let i = 0; i < all.length; i++) {
+                var tags = JSON.parse(all[i].tag_name_array)
+                for (let j = 0; j < tags.length; j++) {
+                    var tag = tags[j]
+                    var letter = pinyinUtil.getFirstLetter(tag.charAt(0));
+                    //如果字母相同
+                    if (letterUpper == letter.toUpperCase()) {
+                        if (letterArray.indexOf(tag) == -1) {
+                            letterArray.push(tag)
+                        }
+                    }
+                }
+            }
+            if (letterArray.length > 0) {
+                letterArray.sort(
+                    function compareFunction(param1, param2) {
+                        return param2.localeCompare(param1, "zh");
+                    }
+                );
+                var item = {}
+                item.letter = letterUpper
+                item.tags = letterArray
+                array.push(item)
+            }
+        }
+        callback(array)
+    })
+}
+
+function show_all_tags(container) {
+    var vue = new Vue({
+        data: {
+            tags: [],
+            loading: true
+        }, created: function () {
+            var that = this;
+            get_all_tags(function (all_tags) {
+                console.log(JSON.stringify(all_tags))
+                if (all_tags.length <= 0) {
+                    return
+                }
+                that.loading = false
+                that.tags = all_tags
+            })
+        }, render: function (h) {
+            var that = this;
+            return h('all-tag', {
+                attrs: {
+                    tags: that.tags,
+                    dialogVisible: true,
+                    loading: that.loading
+                }
+            })
+        }
+    })
+    container.appendChild(vue.$mount().$el)
+}
 
 
 /**
@@ -446,54 +534,6 @@ var _save_project_remarks = function (project_name, username, value) {
         chrome.storage.local.set(rsp);
     });
 };
-
-/**
- * 在stars页面列出所有标签
- * @param project_name
- * @param callback
- */
-function show_stars_tag_list(container) {
-    var get_all_tags = function (callback) {
-        get_all_project_data(function (all) {
-            var array = new Array()
-            for (let i = 0; i < all.length; i++) {
-                var tags = JSON.parse(all[i].tag_name_array)
-                for (let j = 0; j < tags.length; j++) {
-                    if (!array.indexOf(tags[j])) {
-                        array.push(tags[j])
-                    }
-                }
-            }
-            callback(array)
-        })
-    }
-    chrome.storage.sync.get("is_show_stars_tags", function (rsp) {
-        console.log(JSON.stringify(rsp.is_show_stars_tags)+"---->")
-        if (rsp.is_show_stars_tags == true) {
-            get_all_tags(function (all_tags) {
-                console.log(JSON.stringify(all_tags))
-                var vue = new Vue({
-                    data: {},
-                    render: function (h) {
-                        var that = this;
-                        return h('el-tag', {
-                            attrs: {
-                                type: "success",
-                                size: "small"
-                            },
-                            on: {
-                                click: function (event) {
-
-                                }
-                            }
-                        })
-                    }
-                })
-                container.appendChild(vue.$mount().$el)
-            })
-        }
-    })
-}
 
 /**
  * 根据项目名称获取标签列表

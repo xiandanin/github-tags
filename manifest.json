@@ -1,6 +1,6 @@
 {
   "name": "GithubTags",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "给Github项目添加标签，支持按标签搜索，支持数据云同步",
   "manifest_version": 2,
   "icons": {
@@ -27,8 +27,11 @@
         "javascript/lib/Bmob-1.6.6.min.js",
         "javascript/lib/vue.js",
         "javascript/lib/element-ui.js",
+        "javascript/lib/pinyin_dict_firstletter.js",
+        "javascript/lib/pinyinUtil.js",
         "javascript/github/tag.js",
         "javascript/github/list.js",
+        "javascript/github/all-tag.js",
         "javascript/github/index.js"
       ],
       "all_frames": true,

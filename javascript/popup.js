@@ -5,7 +5,7 @@ var btn_edit_id = "btn-edit-appid";
 var old_version_id = "div-old-version";
 var show_stars_tags = "show-stars-tags";
 
-var current_version = "1.1.0"
+var current_version = "1.1.1"
 
 window.onload = function () {
     chrome.storage.sync.get("is_migrate", function (rsp) {
@@ -17,20 +17,12 @@ window.onload = function () {
         }
     })
 
-    chrome.storage.sync.get("is_show_stars_tags", function (rsp) {
-        if (JSON.stringify(rsp.is_show_stars_tags)=='{}') {
-            rsp.is_show_stars_tags = false
-        }
-        document.getElementById(show_stars_tags).checked = rsp.is_show_stars_tags
-    })
-
     chrome.storage.sync.get(null, function (rsp) {
+        document.getElementById(appid_id).value = rsp.appid == undefined ? "" : rsp.appid
+        document.getElementById(apikey_id).value = rsp.apikey == undefined ? "" : rsp.apikey
         const empty = isAPPKeyEmpty(rsp);
         if (!empty) {
             Bmob.initialize(rsp.appid, rsp.apikey);
-
-            document.getElementById(appid_id).value = rsp.appid
-            document.getElementById(apikey_id).value = rsp.apikey
         }
         setEditState(empty)
     });
@@ -111,7 +103,7 @@ window.onload = function () {
         if (ajax.readyState == 4 && ajax.status == 200) {
             document.getElementById("update_container").removeAttribute("style")
             var response = JSON.parse(ajax.responseText)
-            console.log((current_version == response.version)+"--->"+current_version+"--->"+response.version);
+            console.log((current_version == response.version) + "--->" + current_version + "--->" + response.version);
             if (current_version < response.version) {
                 var version = document.getElementById("update_version")
                 version.setAttribute("href", response.link)
@@ -124,10 +116,6 @@ window.onload = function () {
         } else {
             document.getElementById("update_container").style.display = "none"
         }
-    }
-
-    document.getElementById(show_stars_tags).onchange = function (el) {
-        chrome.storage.sync.set({"is_show_stars_tags": document.getElementById(show_stars_tags).checked})
     }
 }
 

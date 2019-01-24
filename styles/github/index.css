@@ -55,3 +55,7 @@
     font-size: 18px;
     margin-right: 10px;
 }
+
+.el-dialog__body{
+    padding-top: 0px;
+}
