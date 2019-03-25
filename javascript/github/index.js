@@ -134,7 +134,7 @@ var _create_search_dom = function (el) {
                 var that = this;
                 return h('a', {
                     attrs: {
-                        id:"search_by_tag",
+                        id: "search_by_tag",
                         class: "btn",
                         href: "#",
                         style: "margin-right:8px;margin-left:8px;float: left;"
@@ -555,8 +555,27 @@ function get_tags_by_project_name(project_name, callback) {
             }
         }).catch(err => {
             console.log(err)
+            errorInitProjectTags(err, project_name)
         });
     })
+}
+
+/**
+ * 如果出现没有表的错误 就手动建表
+ * @param err
+ * @param project_name
+ */
+function errorInitProjectTags(err, project_name) {
+    if (err.code == 101) {
+        const query = Bmob.Query("project_tags");
+        query.set('tag_name_array', "[]")
+        query.set("project_name", project_name)
+        query.save().then(obj => {
+            console.log("手动建表--->" + JSON.stringify(obj))
+        }).catch(err => {
+            console.log("手动建表--->" + err)
+        })
+    }
 }
 
 /**
