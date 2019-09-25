@@ -23,10 +23,11 @@
         <button type="button" class="btn btn-outline-primary btn-sm" @click="handleSaveToken">保存</button>
       </div>
     </div>
-    <div id="update_container" style="display: none">
-      <hr />
-      <div style="font-size: 14px;color: black">有新版本 <a id="update_version" target="_blank"></a></div>
-      <div id="update_message" style="color: #6f7180"></div>
+    <div v-if="updateInfo" class="border-top mt-2 pt-2">
+      <div style="font-size: 14px;color: black">
+        有新版本 <a :href="updateInfo.link" target="_blank">{{ updateInfo.version }}</a>
+      </div>
+      <div style="color: #6f7180">{{ updateInfo.message }}</div>
     </div>
   </div>
 </template>
@@ -41,6 +42,7 @@ export default {
       userInfo: {
         token: null,
       },
+      updateInfo: null,
     };
   },
   methods: {
@@ -75,8 +77,19 @@ export default {
         message: message,
       });
     },
+    checkUpdate() {
+      axios
+        .get('https://raw.githubusercontent.com/dengyuhan/github-tags/master/update.json')
+        .then(rsp => {
+          this.updateInfo = rsp.data;
+        })
+        .catch(error => {
+          console.error(new Date(), error);
+        });
+    },
   },
   mounted() {
+    this.checkUpdate();
     let that = this;
     chrome.storage.sync.get('user', function(rsp) {
       if (rsp && rsp.user && rsp.user.token) {
