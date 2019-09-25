@@ -31,9 +31,10 @@
     </div>
   </div>
 </template>
-
+å
 <script>
 import axios from 'axios';
+import config from '../../../../package.json';
 
 export default {
   data() {
@@ -81,7 +82,13 @@ export default {
       axios
         .get('https://raw.githubusercontent.com/dengyuhan/github-tags/master/update.json')
         .then(rsp => {
-          this.updateInfo = rsp.data;
+          if (rsp.data && rsp.data.version) {
+            let ver = parseInt(rsp.data.version.replace(new RegExp(/\./, 'g'), ''));
+            let c_ver = parseInt(config.version.replace(new RegExp(/\./, 'g'), ''));
+            if (ver > c_ver) {
+              this.updateInfo = rsp.data;
+            }
+          }
         })
         .catch(error => {
           console.error(new Date(), error);
