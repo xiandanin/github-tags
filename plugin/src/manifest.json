@@ -1,0 +1,57 @@
+{
+  "name": "GithubTags",
+  "description": "给Github项目添加标签，支持按标签搜索，支持数据云同步",
+  "version": "1.1.2",
+  "manifest_version": 2,
+  "icons": {
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
+  "browser_action": {
+    "default_title": "github-tags",
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://github.com/*"
+      ],
+      "css": [
+        "content_scripts/css/element-ui.css",
+        "content_scripts/css/global.css",
+        "content_scripts/css/index.css"
+      ],
+      "js": [
+        "content_scripts/js/vue.min.js",
+        "content_scripts/js/axios.min.js",
+        "content_scripts/js/element-ui.js",
+        "content_scripts/js/pinyin_dict_firstletter.js",
+        "content_scripts/js/pinyinUtil.js",
+        "content_scripts/js/tag.js",
+        "content_scripts/js/list.js",
+        "content_scripts/js/all-tag.js",
+        "content_scripts/js/inject.js"
+      ],
+      "all_frames": true,
+      "run_at": "document_start"
+    }
+  ],
+  "permissions": [
+    "storage",
+    "notifications"
+  ],
+  "web_accessible_resources": [
+    "content_scripts/fonts/element-icons.woff",
+    "content_scripts/fonts/element-icons.ttf"
+  ],
+  "options_ui": {
+    "page": "options/options.html",
+    "chrome_style": true
+  },
+  "content_security_policy": "script-src 'self'; connect-src 'self' https://gt.xiandan.in http://localhost:9000 https://*.githubusercontent.com; object-src 'self'"
+}

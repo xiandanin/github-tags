@@ -1,0 +1,22 @@
+.stars_list_container {
+  margin-top: 10px;
+}
+.stars_list_fork {
+  margin-top: 0px;
+}
+.repository_detail_tags_container {
+  width: 100%;
+  background-color: transparent;
+}
+.git_remarks_plugin__input {
+  margin-top: 35px;
+  width: 100%;
+  font-size: 12px;
+  background-color: transparent;
+}
+
+.git_remarks_plugin__input::placeholder {
+}
+.search-result-container {
+  background-color: white;
+}

@@ -1,0 +1,20 @@
+{
+  "name": "githubt-tags-sevice",
+  "version": "1.0.0",
+  "description": "Github Tags API",
+  "main": "api.js",
+  "scripts": {
+    "dev": "nodemon api.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "blueimp-md5": "^2.12.0",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.2.7",
+    "uuid": "^3.3.3",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  }
+}
