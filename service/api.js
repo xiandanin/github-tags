@@ -105,8 +105,8 @@ app.get("/api/get", async function(req, res) {
             .limit(1)
             .next()
         });
+        return;
       }
-      return;
     }
   } catch (e) {
     console.error(new Date(), e.message);
