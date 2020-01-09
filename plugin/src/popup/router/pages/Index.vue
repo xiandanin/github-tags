@@ -31,7 +31,6 @@
     </div>
   </div>
 </template>
-å
 <script>
 import axios from 'axios';
 import config from '../../../../package.json';
@@ -80,7 +79,7 @@ export default {
     },
     checkUpdate() {
       axios
-        .get('https://raw.githubusercontent.com/dengyuhan/github-tags/master/update.json')
+        .get('https://raw.githubusercontent.com/xiandanin/github-tags/master/update.json')
         .then(rsp => {
           if (rsp.data && rsp.data.version) {
             let ver = parseInt(rsp.data.version.replace(new RegExp(/\./, 'g'), ''));
