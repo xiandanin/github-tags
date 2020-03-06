@@ -5,7 +5,7 @@
         <a href="https://gt.xiandan.in/api/oauth" target="_blank">获取Token</a>
       </div>
       <div class="col text-right">
-        <a class="mr-3" href="https://github.com/dengyuhan/github-tags" target="_blank">Star一下</a>
+        <a class="mr-3" href="https://github.com/xiandanin/github-tags" target="_blank">Star一下</a>
         <a href="#" @click="handleClickEdit" v-show="!inputActive">编辑</a>
       </div>
     </div>
