@@ -2,7 +2,7 @@
   "name": "github-tags",
   "version": "1.1.5",
   "description": "A Vue.js web extension",
-  "author": "denghaha <denghahae@qq.com>",
+  "author": "denghaha <denghahae@gmail.com>",
   "scripts": {
     "lint": "eslint --ext .js,.vue src",
     "prettier": "prettier \"src/**/*.{js,vue}\"",

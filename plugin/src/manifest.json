@@ -1,7 +1,7 @@
 {
   "name": "GithubTags",
   "description": "给Github项目添加标签，支持按标签搜索，支持数据云同步",
-  "version": "1.1.2",
+  "version": "1.1.5",
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon.png",
@@ -12,20 +12,12 @@
     "default_popup": "popup/popup.html"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ]
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://github.com/*"
-      ],
-      "css": [
-        "content_scripts/css/element-ui.css",
-        "content_scripts/css/global.css",
-        "content_scripts/css/index.css"
-      ],
+      "matches": ["https://github.com/*"],
+      "css": ["content_scripts/css/element-ui.css", "content_scripts/css/global.css", "content_scripts/css/index.css"],
       "js": [
         "content_scripts/js/vue.min.js",
         "content_scripts/js/axios.min.js",
@@ -41,14 +33,8 @@
       "run_at": "document_start"
     }
   ],
-  "permissions": [
-    "storage",
-    "notifications"
-  ],
-  "web_accessible_resources": [
-    "content_scripts/fonts/element-icons.woff",
-    "content_scripts/fonts/element-icons.ttf"
-  ],
+  "permissions": ["storage", "notifications"],
+  "web_accessible_resources": ["content_scripts/fonts/element-icons.woff", "content_scripts/fonts/element-icons.ttf"],
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
