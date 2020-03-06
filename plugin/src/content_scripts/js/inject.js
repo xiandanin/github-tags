@@ -356,12 +356,42 @@ var _bind_project_remarks = function() {
     }
 
     requestTagsByRepo(project_name, function(rsp) {
-      _create_project_remark_dom(project, rsp ? rsp : { _id: project_name }, 'git_remarks_plugin__input', false);
+      _create_project_remark_dom(
+        project.parentNode.parentNode,
+        rsp ? rsp : { _id: project_name },
+        'git_remarks_plugin__input git_remarks_plugin__detail container-lg mb-4 px-3',
+        false
+      );
+    });
+    return;
+  }
+  // 列表
+  let repoList = document.querySelector('.repo-list');
+  if (repoList) {
+    if (isBindMark(repoList)) {
+      return;
+    } else {
+      bindMark(repoList);
+    }
+    var project_name_array = [];
+    let repoNameList = repoList.getElementsByClassName('f4 text-normal');
+    for (i = 0; i < repoNameList.length; i++) {
+      if (repoNameList[i].getElementsByTagName('a').length === 1) {
+        project_name = repoNameList[i].getElementsByTagName('a')[0].getAttribute('href');
+      }
+      if (project_name !== null && project_name != undefined && project_name != '') {
+        project_name_array.push(project_name);
+      }
+    }
+    requestTagsByRepoList(project_name_array, function(rsp) {
+      for (let j = 0; j < rsp.length; j++) {
+        _create_project_remark_dom(repoNameList[j], rsp[j] ? rsp[j] : { _id: project_name }, 'repository_detail_tags_container', false);
+      }
     });
     return;
   }
 
-  // 列表
+  // star列表
   let star = document.getElementsByClassName('d-lg-flex gutter-lg mt-4');
   if (star && star.length > 0) {
     var list = star[0];

@@ -15,6 +15,11 @@
   background-color: transparent;
 }
 
+.git_remarks_plugin__detail {
+  margin-top: -13px;
+  margin-left: 10px;
+}
+
 .git_remarks_plugin__input::placeholder {
 }
 .search-result-container {
