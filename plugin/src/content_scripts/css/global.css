@@ -17,7 +17,8 @@
 
 .git_remarks_plugin__detail {
   margin-top: -13px;
-  margin-left: 10px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .git_remarks_plugin__input::placeholder {

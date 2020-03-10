@@ -8,7 +8,7 @@
 
 [从 Chrome 插件商店安装](https://chrome.google.com/webstore/detail/jfppflnlpiekbiglfgiajddmkiglapog)
 
-[下载 crx 文件安装](https://github.com/dengyuhan/github-tags/releases)
+[下载 crx 文件安装](https://github.com/xiandanin/github-tags/releases)
 
 ## 截图
 
