@@ -114,11 +114,10 @@ var _create_search_dom = function(el) {
     data: {},
     render: function(h) {
       var that = this;
-      return h('a', {
+      return h('button', {
         attrs: {
           id: 'search_by_tag',
           class: 'btn',
-          href: '#',
           style: 'margin-right:8px;margin-left:8px;float: left;',
         },
         domProps: {
@@ -169,10 +168,10 @@ var _create_search_dom = function(el) {
     data: {},
     render: function(h) {
       var that = this;
-      return h('a', {
+      return h('button', {
         attrs: {
           class: 'btn',
-          href: '#',
+          href: 'button',
           style: 'margin-right:8px;',
         },
         domProps: {
