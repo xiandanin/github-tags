@@ -331,8 +331,9 @@ var _bind_project_remarks = function() {
   }
 
   // 项目详情页
-  if (document.getElementsByClassName('pagehead').length === 1 && document.getElementsByClassName('pagehead')[0].getElementsByTagName('h1').length === 1) {
-    project = document.getElementsByClassName('pagehead')[0].getElementsByTagName('h1')[0];
+  const detail = document.querySelector('body > div.application-main > div > main > div.bg-gray-light.pt-3.hide-full-screen.mb-5 > div');
+  if (detail && detail.getElementsByTagName('h1').length === 1) {
+    project = detail.getElementsByTagName('h1')[0];
 
     if (isBindMark(project)) {
       return;
@@ -356,12 +357,7 @@ var _bind_project_remarks = function() {
     }
 
     requestTagsByRepo(project_name, function(rsp) {
-      _create_project_remark_dom(
-        project.parentNode.parentNode,
-        rsp ? rsp : { _id: project_name },
-        'git_remarks_plugin__input git_remarks_plugin__detail container-lg mb-4 px-3',
-        false
-      );
+      _create_project_remark_dom(project.parentNode.parentNode, rsp ? rsp : { _id: project_name }, 'git_remarks_plugin__input git_remarks_plugin__detail container-lg px-3', false);
     });
     return;
   }
