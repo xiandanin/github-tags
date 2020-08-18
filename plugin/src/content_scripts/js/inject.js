@@ -144,19 +144,33 @@ var _create_search_dom = function(el) {
   input.autocomplete = 'off';
   input.value = getUrlParams('q');
 
-  var button = document.createElement('button');
-  var search_function = function() {
-    var url = window.location.href;
-    if (url.indexOf('&q') != -1) {
-      window.location.href = url.substring(0, url.indexOf('&q')) + '&q=' + input.value;
-    } else {
-      window.location.href = url + '&utf8=✓&q=' + input.value;
-    }
-  };
-  button.onclick = search_function;
-  button.className = 'btn';
-  button.innerHTML =
-    '<svg class="octicon octicon-search" style="margin-right: 10px;vertical-align:middle" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z"></path></svg>搜索';
+  var button = new Vue({
+    data: {},
+    render: function(h) {
+      var that = this;
+      return h('button', {
+        attrs: {
+          class: 'btn',
+          href: 'button',
+          style: 'margin-right:8px;',
+        },
+        domProps: {
+          innerHTML:
+            '<svg class="octicon octicon-search" style="margin-right: 10px;vertical-align:middle" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M15.7 13.3l-3.81-3.83A5.93 5.93 0 0 0 13 6c0-3.31-2.69-6-6-6S1 2.69 1 6s2.69 6 6 6c1.3 0 2.48-.41 3.47-1.11l3.83 3.81c.19.2.45.3.7.3.25 0 .52-.09.7-.3a.996.996 0 0 0 0-1.41v.01zM7 10.7c-2.59 0-4.7-2.11-4.7-4.7 0-2.59 2.11-4.7 4.7-4.7 2.59 0 4.7 2.11 4.7 4.7 0 2.59-2.11 4.7-4.7 4.7z"></path></svg>搜索',
+        },
+        on: {
+          click: function(event) {
+            var url = window.location.href;
+            if (url.indexOf('&q') != -1) {
+              window.location.href = url.substring(0, url.indexOf('&q')) + '&q=' + input.value;
+            } else {
+              window.location.href = url + '&utf8=✓&q=' + input.value;
+            }
+          },
+        },
+      });
+    },
+  });
 
   input.addEventListener('keypress', function() {
     if (event.keyCode == 13) {
@@ -189,7 +203,7 @@ var _create_search_dom = function(el) {
   div.appendChild(input);
   div.appendChild(vue.$mount().$el);
   div.appendChild(vue_all.$mount().$el);
-  div.appendChild(button);
+  div.appendChild(button.$mount().$el);
   el.parentNode.insertBefore(div, el);
 
   return false;
@@ -213,7 +227,12 @@ var _create_search_list_dom = function(keyword) {
       var that = this;
       searchTags(keyword, function(rsp) {
         console.log('搜索结果：\n' + JSON.stringify(rsp, null, 2));
-        that.items = rsp;
+        that.items = rsp.map(it => {
+          if (it.project_name.indexOf('/') === 0) {
+            it.project_name = it.project_name.substring(1);
+          }
+          return it;
+        });
       });
     },
     render: function(h) {
@@ -356,7 +375,7 @@ var _bind_project_remarks = function() {
     }
 
     requestTagsByRepo(project_name, function(rsp) {
-      _create_project_remark_dom(project.parentNode.parentNode, rsp ? rsp : { _id: project_name }, 'git_remarks_plugin__input git_remarks_plugin__detail container-lg px-3', false);
+      _create_project_remark_dom(project.parentNode.parentNode, rsp ? rsp : { _id: project_name }, 'git_remarks_plugin__input git_remarks_plugin__detail px-3 px-lg-5', false);
     });
     return;
   }

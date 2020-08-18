@@ -1,5 +1,3 @@
-[停止更新，正常维护]
-
 # GithubTags
 
 给 Github 项目添加标签的 Chrome 插件，支持按标签搜索，数据支持云同步
@@ -16,7 +14,7 @@
 
 #### 项目详情
 
-<img src="screenshot/2.png" width = 600/>
+<img src="screenshot/2.jpg" width = 600/>
 
 #### 个人主页
 

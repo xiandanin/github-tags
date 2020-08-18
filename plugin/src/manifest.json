@@ -1,7 +1,7 @@
 {
   "name": "GithubTags",
   "description": "给Github项目添加标签，支持按标签搜索，支持数据云同步",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "manifest_version": 2,
   "icons": {
     "48": "icons/icon.png",
