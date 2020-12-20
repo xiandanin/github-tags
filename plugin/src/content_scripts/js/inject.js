@@ -349,8 +349,9 @@ var _bind_project_remarks = function() {
   }
 
   // 项目详情页
-  const detail = document.querySelector('body > div.application-main > div > main > div.bg-gray-light.pt-3.hide-full-screen.mb-5 > div');
-  if (detail && detail.getElementsByTagName('h1').length === 1) {
+  const detail = document.querySelector('#js-repo-pjax-container > div > div');
+
+  if (detail && detail.getElementsByTagName('h1').length > 0) {
     project = detail.getElementsByTagName('h1')[0];
 
     if (isBindMark(project)) {
