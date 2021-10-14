@@ -42,10 +42,10 @@ var bindMark = function(el) {
  * @returns
  * @private
  */
-var _create_project_remark_dom = function(el, item, class_name, insert_before) {
+var _create_project_remark_dom = function(el, item, class_name, insertElement) {
   // 调整元素位置，以供 input 填充
-  //el.style.marginBottom = '30px';
-  //el.style.display = 'block';
+  // el.style.marginBottom = '30px';
+  // el.style.display = 'block';
 
   if (!item.tags) {
     item.tags = [];
@@ -81,14 +81,10 @@ var _create_project_remark_dom = function(el, item, class_name, insert_before) {
   });
 
   var input = vue.$mount();
-  if (insert_before) {
-    el.parentNode.insertBefore(input.$el, el);
-  } else {
-    insertAfter(input.$el, el);
-  }
+  insertElement(input.$el);
 
   // 有 fork 时 input 应该更往下
-  //console.log(el.getElementsByClassName('fork-flag'), input);
+  // console.log(el.getElementsByClassName('fork-flag'), input);
   if (el.getElementsByClassName('fork-flag').length > 0) {
     input.$el.style.marginTop = '40px';
   }
@@ -245,7 +241,7 @@ var _create_search_list_dom = function(keyword) {
     },
   });
 
-  //计算出已存在item数量
+  // 计算出已存在item数量
   var childNodes = el.childNodes;
   var itemCount = 0;
   for (var i = 0; i < childNodes.length; i++) {
@@ -253,13 +249,13 @@ var _create_search_list_dom = function(keyword) {
       itemCount++;
     }
   }
-  //先清空现有的item
+  // 先清空现有的item
   for (var i = 0; i < itemCount; i++) {
     el.removeChild(el.getElementsByClassName('col-12')[0]);
   }
 
   var result_container = document.getElementsByClassName('search-result-container');
-  //如果之前已经有搜索结果 先删除掉之前的
+  // 如果之前已经有搜索结果 先删除掉之前的
   if (result_container != null && result_container.length > 0) {
     el.removeChild(result_container[0]);
   }
@@ -272,16 +268,16 @@ var _create_search_list_dom = function(keyword) {
 var get_all_tags = function(callback) {
   getAllTags(function(all) {
     var array = new Array();
-    //遍历A-Z
+    // 遍历A-Z
     for (let k = 'a'.charCodeAt(); k <= 'z'.charCodeAt(); k++) {
       var letterUpper = String.fromCharCode(k).toUpperCase();
-      //遍历所有标签
+      // 遍历所有标签
       var letterArray = new Array();
       for (let i = 0; i < all.length; i++) {
         for (let j = 0; j < all[i].tags.length; j++) {
           var tag = all[i].tags[j];
           var letter = pinyinUtil.getFirstLetter(tag.charAt(0));
-          //如果字母相同
+          // 如果字母相同
           if (letterUpper == letter.toUpperCase()) {
             if (letterArray.indexOf(tag) == -1) {
               letterArray.push(tag);
@@ -364,11 +360,11 @@ var _bind_project_remarks = function() {
     for (i = 0; i < projects.length; i++) {
       if (projects[i].getAttribute('data-pjax') !== null) {
         var fork = project.getElementsByClassName('fork-flag');
-        //如果是fork的 拿fork的名字
+        // 如果是fork的 拿fork的名字
         if (fork != null && fork.length > 0) {
           project_name = fork[0].getElementsByTagName('a')[0].getAttribute('href');
         } else {
-          //如果fork没有拿到直接取项目名
+          // 如果fork没有拿到直接取项目名
           project_name = project.getElementsByTagName('a')[i].getAttribute('href');
         }
         break;
@@ -376,7 +372,10 @@ var _bind_project_remarks = function() {
     }
 
     requestTagsByRepo(project_name, function(rsp) {
-      _create_project_remark_dom(project.parentNode.parentNode, rsp ? rsp : { _id: project_name }, 'git_remarks_plugin__input git_remarks_plugin__detail px-3 px-lg-5', false);
+      const node = project.parentNode.parentNode;
+      _create_project_remark_dom(node, rsp || { _id: project_name }, 'git_remarks_plugin__input git_remarks_plugin__detail px-3 px-lg-5', el => {
+        insertAfter(el, node);
+      });
     });
     return;
   }
@@ -400,7 +399,9 @@ var _bind_project_remarks = function() {
     }
     requestTagsByRepoList(project_name_array, function(rsp) {
       for (let j = 0; j < rsp.length; j++) {
-        _create_project_remark_dom(repoNameList[j], rsp[j] ? rsp[j] : { _id: project_name }, 'repository_detail_tags_container', false);
+        _create_project_remark_dom(repoNameList[j], rsp[j] ? rsp[j] : { _id: project_name }, 'repository_detail_tags_container', el => {
+          insertAfter(el, repoNameList[j].parentNode);
+        });
       }
     });
     return;
@@ -420,7 +421,7 @@ var _bind_project_remarks = function() {
     projects = list.getElementsByTagName('h3');
     var project_name_array = [];
     for (i = 0; i < projects.length; i++) {
-      //如果有fork的 取fork的名称
+      // 如果有fork的 取fork的名称
       var forkSpan = projects[i].parentNode.getElementsByClassName('f6 text-gray mb-1');
       if (forkSpan != null && forkSpan.length > 0) {
         var forkA = forkSpan[0].getElementsByTagName('a');
@@ -428,7 +429,7 @@ var _bind_project_remarks = function() {
           project_name = forkA[0].getAttribute('href');
         }
       } else {
-        //如果没有fork才取项目名
+        // 如果没有fork才取项目名
         if (projects[i].getElementsByTagName('a').length === 1) {
           project_name = projects[i].getElementsByTagName('a')[0].getAttribute('href');
         }
@@ -440,7 +441,9 @@ var _bind_project_remarks = function() {
 
     requestTagsByRepoList(project_name_array, function(rsp) {
       for (let j = 0; j < rsp.length; j++) {
-        _create_project_remark_dom(projects[j], rsp[j] ? rsp[j] : { _id: project_name }, 'repository_detail_tags_container', false);
+        _create_project_remark_dom(projects[j], rsp[j] ? rsp[j] : { _id: project_name }, 'repository_detail_tags_container', el => {
+          insertAfter(el, projects[j]);
+        });
       }
     });
     return;
@@ -458,7 +461,7 @@ var _bind_project_remarks = function() {
     var project_name_array = [];
     for (i = 0; i < projects.length; i++) {
       var createClass = 'stars_list_container';
-      //先检查fork的
+      // 先检查fork的
       var forkTag = projects[i].getElementsByClassName('text-gray text-small mb-2');
       if (forkTag != null && forkTag.length > 0) {
         var forkA = forkTag[0].getElementsByTagName('a');
@@ -475,10 +478,11 @@ var _bind_project_remarks = function() {
     requestTagsByRepoList(project_name_array, function(rsp) {
       for (let j = 0; j < rsp.length; j++) {
         var p = projects[j].getElementsByClassName('pinned-item-desc')[0];
-        _create_project_remark_dom(p, rsp[j] ? rsp[j] : { _id: project_name }, createClass, true);
+        _create_project_remark_dom(p, rsp[j] ? rsp[j] : { _id: project_name }, createClass, el => {
+          p.parentNode.insertBefore(el, p);
+        });
       }
     });
-    return;
   }
 };
 
@@ -531,8 +535,7 @@ function getUrlParams(name) {
   return null;
 }
 
-//axios.defaults.baseURL = 'http://localhost:9000/';
-axios.defaults.baseURL = 'https://gt.xiandan.in';
+axios.defaults.baseURL = 'http://localhost:9000/';
 chrome.storage.sync.get('user', function(rsp) {
   console.log('GithubTags', JSON.stringify(rsp, '\t', 2));
   axios.interceptors.request.use(
