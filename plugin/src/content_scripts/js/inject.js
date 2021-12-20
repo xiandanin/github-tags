@@ -408,7 +408,7 @@ var _bind_project_remarks = function() {
   }
 
   // star列表
-  let star = document.getElementsByClassName('d-lg-flex gutter-lg mt-4');
+  let star = document.getElementsByClassName('d-lg-flex gutter-lg');
   if (star && star.length > 0) {
     var list = star[0];
 
