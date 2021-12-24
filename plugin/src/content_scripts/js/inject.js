@@ -99,7 +99,8 @@ var _create_project_remark_dom = function(el, item, class_name, insertElement) {
  * @returns {boolean}
  * @private
  */
-var _create_search_dom = function(el) {
+var _create_search_dom = function() {
+  const el = document.querySelector('form.subnav-search').parentNode;
   // 如果 dom 已经被创建则直接返回 true
   if (el.getAttribute != null && el.getAttribute('class') != null && el.getAttribute('class').indexOf(bindMarkText) !== -1) return true;
 
@@ -114,7 +115,7 @@ var _create_search_dom = function(el) {
         attrs: {
           id: 'search_by_tag',
           class: 'btn',
-          style: 'margin-right:8px;margin-left:8px;float: left;',
+          style: 'margin-right:8px;margin-left:8px;',
         },
         domProps: {
           innerHTML: '按标签搜索',
@@ -129,13 +130,13 @@ var _create_search_dom = function(el) {
   });
 
   var div = document.createElement('div');
+  div.style = 'margin-top:16px;'
 
   var input = document.createElement('input');
   input.id = 'search_input';
-  input.style = 'width:300px;float: left;';
   input.type = 'search';
   input.name = 'q';
-  input.className = 'form-control';
+  input.className = 'form-control subnav-search-input';
   input.autocapitalize = 'off';
   input.autocomplete = 'off';
   input.value = getUrlParams('q');
@@ -168,11 +169,11 @@ var _create_search_dom = function(el) {
     },
   });
 
-  input.addEventListener('keypress', function() {
+  /*input.addEventListener('keypress', function() {
     if (event.keyCode == 13) {
       search_function();
     }
-  });
+  });*/
 
   var vue_all = new Vue({
     data: {},
@@ -199,7 +200,8 @@ var _create_search_dom = function(el) {
   div.appendChild(input);
   div.appendChild(vue.$mount().$el);
   div.appendChild(vue_all.$mount().$el);
-  div.appendChild(button.$mount().$el);
+  // div.appendChild(button.$mount().$el);
+  // el.parentNode.insertBefore(div, el);
   el.parentNode.insertBefore(div, el);
 
   return false;
@@ -259,7 +261,7 @@ var _create_search_list_dom = function(keyword) {
   if (result_container != null && result_container.length > 0) {
     el.removeChild(result_container[0]);
   }
-  var paginate = document.getElementsByClassName('paginate-container')[0];
+  var paginate = document.querySelector('.search-result-container');
   el.insertBefore(vue.$mount().$el, paginate);
 
   return false;
@@ -337,11 +339,9 @@ function show_all_tags(container) {
 var _bind_project_remarks = function() {
   var project, projects, project_name, i;
 
-  var repositories = document.getElementsByClassName('h6 text-uppercase');
-  if (repositories !== null && repositories.length > 0) {
-    var details = repositories[0].parentNode.getElementsByTagName('details');
-    _create_search_dom(details[0]);
-    repositories[0].parentNode.removeChild(repositories[0]);
+
+  if (window.location.href.indexOf('tab=stars')!==-1) {
+    _create_search_dom()
   }
 
   // 项目详情页
