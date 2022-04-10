@@ -1,5 +1,6 @@
 'use strict';
 // 标记当前元素已经被创建并绑定
+
 var bindMarkText = '__bind_mark';
 var defalutUserName = 'default_user';
 
@@ -130,7 +131,7 @@ var _create_search_dom = function() {
   });
 
   var div = document.createElement('div');
-  div.style = 'margin-top:16px;'
+  div.style = 'margin-top:16px;';
 
   var input = document.createElement('input');
   input.id = 'search_input';
@@ -339,16 +340,15 @@ function show_all_tags(container) {
 var _bind_project_remarks = function() {
   var project, projects, project_name, i;
 
-
-  if (window.location.href.indexOf('tab=stars')!==-1) {
-    _create_search_dom()
+  if (window.location.href.indexOf('tab=stars') !== -1) {
+    _create_search_dom();
   }
 
   // 项目详情页
   const detail = document.querySelector('#js-repo-pjax-container > div > div');
 
-  if (detail && detail.getElementsByTagName('h1').length > 0) {
-    project = detail.getElementsByTagName('h1')[0];
+  if (detail && detail.getElementsByTagName('h2').length > 0) {
+    project = detail.getElementsByTagName('h2')[0];
 
     if (isBindMark(project)) {
       return;
@@ -535,7 +535,8 @@ function getUrlParams(name) {
   return null;
 }
 
-axios.defaults.baseURL = 'http://localhost:9000/';
+//axios.defaults.baseURL = 'http://localhost:9000/';
+axios.defaults.baseURL = 'https://gt.xiandan.in/';
 chrome.storage.sync.get('user', function(rsp) {
   console.log('GithubTags', JSON.stringify(rsp, '\t', 2));
   axios.interceptors.request.use(
